@@ -38,9 +38,7 @@ const canvasToBlob = (canvas: HTMLCanvasElement, type: string, quality = 0.92): 
     );
   });
 
-const downloadBlob = (blob: Blob, name: string) => saveAs(blob, name);
-const downloadBytes = (bytes: Uint8Array, name: string) =>
-  saveAs(new Blob([bytes], { type: "application/pdf" }), name);
+const pdfBlob = (bytes: Uint8Array) => new Blob([bytes.buffer as ArrayBuffer], { type: "application/pdf" });
 
 // ─── Image conversion via Canvas ────────────────────────────
 
