@@ -122,7 +122,7 @@ async function mergePdf(files: File[]): Promise<{ blob: Blob; name: string }> {
     pages.forEach((p) => merged.addPage(p));
   }
   const out = await merged.save();
-  return { blob: new Blob([out], { type: "application/pdf" }), name: "merged.pdf" };
+  return { blob: pdfBlob(out), name: "merged.pdf" };
 }
 
 async function splitPdf(
