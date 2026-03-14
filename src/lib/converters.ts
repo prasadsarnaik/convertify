@@ -234,7 +234,7 @@ async function imageToPdf(files: File[]): Promise<{ blob: Blob; name: string }> 
   }
 
   const out = await doc.save();
-  return { blob: new Blob([out], { type: "application/pdf" }), name: "images.pdf" };
+  return { blob: pdfBlob(out), name: "images.pdf" };
 }
 
 // ─── Tool config & dispatcher ───────────────────────────────

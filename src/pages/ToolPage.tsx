@@ -11,7 +11,7 @@ const ToolPage = () => {
   return (
     <>
       <Navbar />
-      <ToolWorkspace toolName={formatSlug(slug || "")} />
+      <ToolWorkspace toolName={formatSlug(slug || "")} toolSlug={slug || ""} />
       <Footer />
     </>
   );
