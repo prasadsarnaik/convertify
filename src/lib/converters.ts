@@ -183,7 +183,7 @@ async function rotatePdf(
   });
   const out = await doc.save();
   const baseName = file.name.replace(/\.[^.]+$/, "");
-  return { blob: new Blob([out], { type: "application/pdf" }), name: `${baseName}-rotated.pdf` };
+  return { blob: pdfBlob(out), name: `${baseName}-rotated.pdf` };
 }
 
 async function pdfToJpg(file: File): Promise<{ blob: Blob; name: string }> {
