@@ -169,7 +169,7 @@ async function compressPdf(file: File): Promise<{ blob: Blob; name: string }> {
   // Basic compression: re-save (strips unused objects)
   const out = await doc.save();
   const baseName = file.name.replace(/\.[^.]+$/, "");
-  return { blob: new Blob([out], { type: "application/pdf" }), name: `${baseName}-compressed.pdf` };
+  return { blob: pdfBlob(out), name: `${baseName}-compressed.pdf` };
 }
 
 async function rotatePdf(
