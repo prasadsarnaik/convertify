@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const navLinks = [
   { label: "Tools", href: "/tools" },
@@ -14,9 +14,28 @@ const navLinks = [
 const Navbar = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [menuOpen]);
 
   return (
     <motion.nav
+      ref={navRef}
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -30,8 +49,8 @@ const Navbar = () => {
           PDFly
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+        {/* Desktop links — hidden below lg (1024px) */}
+        <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-muted-foreground">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -46,52 +65,89 @@ const Navbar = () => {
         {/* Desktop CTA */}
         <Link
           to="/tools"
-          className="hidden md:block px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+          className="hidden lg:block px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
         >
           Start Free
         </Link>
 
-        {/* Mobile hamburger */}
-        <button
+        {/* Mobile hamburger — shown below lg */}
+        <motion.button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-1.5 rounded-lg hover:bg-muted transition-colors"
+          className="lg:hidden p-2 rounded-xl hover:bg-muted transition-colors"
+          whileTap={{ scale: 0.9 }}
         >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+          <AnimatePresence mode="wait" initial={false}>
+            {menuOpen ? (
+              <motion.span
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="block"
+              >
+                <X className="w-5 h-5 text-foreground" />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="block"
+              >
+                <Menu className="w-5 h-5 text-foreground" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu panel */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="mt-2 p-4 rounded-2xl border border-border bg-background/95 backdrop-blur-xl shadow-nav md:hidden"
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mt-2 p-5 rounded-2xl border border-border bg-background shadow-card-hover lg:hidden"
           >
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
+              {navLinks.map((link, i) => (
+                <motion.div
                   key={link.href}
-                  to={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    location.pathname === link.href
-                      ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.25, delay: i * 0.05 }}
                 >
-                  {link.label}
-                </Link>
+                  <Link
+                    to={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                      location.pathname === link.href
+                        ? "bg-muted text-foreground"
+                        : "text-muted-foreground active:bg-muted hover:text-foreground"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
-              <Link
-                to="/tools"
-                onClick={() => setMenuOpen(false)}
-                className="mt-2 px-4 py-2.5 rounded-full bg-foreground text-background text-sm font-medium text-center hover:opacity-90 transition-opacity"
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.25, delay: navLinks.length * 0.05 }}
               >
-                Start Free
-              </Link>
+                <Link
+                  to="/tools"
+                  onClick={() => setMenuOpen(false)}
+                  className="block mt-3 px-4 py-3 rounded-full bg-primary text-primary-foreground text-base font-medium text-center hover:opacity-90 transition-opacity"
+                >
+                  Start Free
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}
