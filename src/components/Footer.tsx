@@ -1,8 +1,37 @@
+import { Link } from "react-router-dom";
+
 const columns = [
-  { title: "Tools", links: ["Merge PDF", "Split PDF", "Compress PDF", "PDF to JPG", "JPG to PDF"] },
-  { title: "Company", links: ["About", "Blog", "Careers"] },
-  { title: "Support", links: ["Help Center", "Contact", "Status"] },
-  { title: "Legal", links: ["Privacy", "Terms", "Cookies"] },
+  {
+    title: "Tools",
+    links: [
+      { label: "Merge PDF", href: "/tool/merge-pdf" },
+      { label: "Split PDF", href: "/tool/split-pdf" },
+      { label: "Compress PDF", href: "/tool/compress-pdf" },
+      { label: "PDF to JPG", href: "/tool/pdf-to-jpg" },
+      { label: "JPG to PDF", href: "/tool/jpg-to-pdf" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Help Center", href: "/contact" },
+      { label: "FAQ", href: "/how-it-works" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+    ],
+  },
 ];
 
 const Footer = () => (
@@ -14,8 +43,13 @@ const Footer = () => (
             <h4 className="font-semibold text-sm text-foreground mb-4">{col.title}</h4>
             <ul className="space-y-2.5">
               {col.links.map((link) => (
-                <li key={link}>
-                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{link}</span>
+                <li key={link.label}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
