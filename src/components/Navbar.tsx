@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import pdflyLogo from "@/assets/pdfly-logo.png";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const navLinks = [
@@ -52,9 +53,7 @@ const Navbar = () => {
       >
         <div className="flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-nav">
           <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg text-foreground">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-blue to-accent-purple flex items-center justify-center shrink-0">
-              <FileText className="w-4 h-4 text-primary-foreground" />
-            </div>
+            <img src={pdflyLogo} alt="PDFly logo" className="w-8 h-8 object-contain shrink-0" />
             PDFly
           </Link>
 
