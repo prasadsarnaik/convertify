@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, X, Download, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { saveAs } from "file-saver";
+
 import { getToolConfig, runConversion, type ConvertResult, type ToolOption } from "@/lib/converters";
 
 const MIME_MAP: Record<string, string> = {
