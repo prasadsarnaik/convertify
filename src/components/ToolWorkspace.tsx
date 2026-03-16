@@ -109,7 +109,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
   };
 
   const handleDownload = () => {
-    results.forEach((r) => saveAs(r.blob, r.name));
+    results.forEach((r) => downloadBlob(r.blob, r.name));
   };
 
   const handleReset = () => {
