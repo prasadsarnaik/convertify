@@ -2,8 +2,52 @@ import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, X, Download, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { saveAs } from "file-saver";
+
 import { getToolConfig, runConversion, type ConvertResult, type ToolOption } from "@/lib/converters";
+
+const MIME_MAP: Record<string, string> = {
+  ".pdf": "application/pdf",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".heic": "image/heic",
+  ".heif": "image/heif",
+};
+
+function buildAcceptMap(accept: string): Record<string, string[]> {
+  const map: Record<string, string[]> = {};
+  for (const part of accept.split(",").map((s) => s.trim())) {
+    if (part.includes("/")) {
+      // Already a MIME type like "image/*"
+      map[part] = [];
+    } else if (MIME_MAP[part]) {
+      const mime = MIME_MAP[part];
+      if (!map[mime]) map[mime] = [];
+      map[mime].push(part);
+    } else {
+      // Unknown extension — use wildcard
+      map["application/octet-stream"] = [...(map["application/octet-stream"] || []), part];
+    }
+  }
+  return map;
+}
+
+function downloadBlob(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.style.display = "none";
+  document.body.appendChild(a);
+  a.click();
+  // Clean up after a short delay to ensure mobile browsers complete the download
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }, 1000);
+}
 
 interface FileItem {
   file: File;
@@ -39,7 +83,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: config.accept
-      ? Object.fromEntries(config.accept.split(",").map((a) => [a.trim().startsWith(".") ? `application/${a.trim().slice(1)}` : a.trim(), []]))
+      ? buildAcceptMap(config.accept)
       : undefined,
     multiple: config.multiple !== false,
   });
@@ -65,7 +109,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
   };
 
   const handleDownload = () => {
-    results.forEach((r) => saveAs(r.blob, r.name));
+    results.forEach((r) => downloadBlob(r.blob, r.name));
   };
 
   const handleReset = () => {
