@@ -39,7 +39,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: config.accept
-      ? Object.fromEntries(config.accept.split(",").map((a) => [a.trim().startsWith(".") ? `application/${a.trim().slice(1)}` : a.trim(), []]))
+      ? buildAcceptMap(config.accept)
       : undefined,
     multiple: config.multiple !== false,
   });
