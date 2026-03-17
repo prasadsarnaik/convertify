@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import pdflyLogo from "@/assets/pdfly-logo.png";
+import convertifyLogo from "@/assets/convertify-logo.png";
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const navLinks = [
