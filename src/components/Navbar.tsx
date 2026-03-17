@@ -51,7 +51,7 @@ const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <div className="flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-nav">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-nav">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src={convertifyLogo} alt="Convertify logo" className="h-9 object-contain shrink-0" />
           </Link>
