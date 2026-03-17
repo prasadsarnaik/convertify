@@ -53,7 +53,7 @@ const Navbar = () => {
       >
         <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-nav">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src={convertifyLogo} alt="Convertify logo" className="h-12 object-contain shrink-0" />
+            <img src={convertifyLogo} alt="Convertify logo" className="h-9 object-contain shrink-0" />
           </Link>
 
           {/* Desktop links — hidden below lg (1024px) */}
