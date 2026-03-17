@@ -34,7 +34,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-lg text-muted-foreground leading-relaxed"
         >
-          PDFly is a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful. Our goal is to provide powerful file tools with a clean user experience inspired by Apple's design philosophy.
+          Convertify is a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful. Our goal is to provide powerful file tools with a clean user experience inspired by Apple's design philosophy.
         </motion.p>
       </section>
 
