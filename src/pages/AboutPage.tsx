@@ -25,7 +25,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5 }}
           className="text-4xl md:text-6xl font-bold text-foreground mb-6"
         >
-          About PDFly
+          About Convertify
         </motion.h1>
         <motion.p
           variants={fade}
