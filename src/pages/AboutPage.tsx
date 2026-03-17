@@ -55,7 +55,7 @@ const AboutPage = () => (
         </motion.div>
       </section>
 
-      {/* Why PDFly */}
+      {/* Why Convertify */}
       <section className="container max-w-4xl mx-auto px-6 mb-20">
         <motion.h2
           variants={fade}
