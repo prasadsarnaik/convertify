@@ -18,7 +18,7 @@ const Features = () => (
         transition={{ duration: 0.5 }}
         className="text-center mb-14"
       >
-        <h2 className="text-3xl md:text-5xl font-bold text-foreground">Why PDFly?</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-foreground">Why Convertify?</h2>
         <p className="mt-4 text-muted-foreground text-lg">Built for speed, security and simplicity.</p>
       </motion.div>
 

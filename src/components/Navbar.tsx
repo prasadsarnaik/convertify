@@ -53,8 +53,8 @@ const Navbar = () => {
       >
         <div className="flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl border border-border bg-background/80 backdrop-blur-xl shadow-nav">
           <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg text-foreground">
-            <img src={pdflyLogo} alt="PDFly logo" className="w-10 h-10 sm:w-8 sm:h-8 object-contain shrink-0" />
-            PDFly
+            <img src={convertifyLogo} alt="Convertify logo" className="w-10 h-10 sm:w-8 sm:h-8 object-contain shrink-0" />
+            Convertify
           </Link>
 
           {/* Desktop links — hidden below lg (1024px) */}

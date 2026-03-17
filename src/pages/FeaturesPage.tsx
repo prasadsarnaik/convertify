@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const features = [
-  { icon: Zap, title: "Lightning Fast", desc: "PDFly processes files quickly using optimized cloud tools.", color: "from-accent-orange to-accent-pink" },
+  { icon: Zap, title: "Lightning Fast", desc: "Convertify processes files quickly using optimized cloud tools.", color: "from-accent-orange to-accent-pink" },
   { icon: Shield, title: "Secure Processing", desc: "Files are automatically deleted after processing.", color: "from-accent-green to-accent-blue" },
   { icon: Layers, title: "Batch Conversion", desc: "Convert multiple files at once.", color: "from-accent-purple to-accent-pink" },
   { icon: Smartphone, title: "Mobile Friendly", desc: "Works beautifully on mobile, tablet and desktop.", color: "from-accent-blue to-accent-purple" },

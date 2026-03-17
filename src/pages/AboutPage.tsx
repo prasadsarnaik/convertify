@@ -65,7 +65,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5 }}
           className="text-3xl md:text-4xl font-bold text-foreground text-center mb-12"
         >
-          Why PDFly?
+          Why Convertify?
         </motion.h2>
         <div className="grid sm:grid-cols-2 gap-5">
           {whyItems.map((item, i) => (
