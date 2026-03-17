@@ -25,7 +25,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5 }}
           className="text-4xl md:text-6xl font-bold text-foreground mb-6"
         >
-          About PDFly
+          About Convertify
         </motion.h1>
         <motion.p
           variants={fade}
@@ -34,7 +34,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-lg text-muted-foreground leading-relaxed"
         >
-          PDFly is a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful. Our goal is to provide powerful file tools with a clean user experience inspired by Apple's design philosophy.
+          Convertify is a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful. Our goal is to provide powerful file tools with a clean user experience inspired by Apple's design philosophy.
         </motion.p>
       </section>
 
@@ -55,7 +55,7 @@ const AboutPage = () => (
         </motion.div>
       </section>
 
-      {/* Why PDFly */}
+      {/* Why Convertify */}
       <section className="container max-w-4xl mx-auto px-6 mb-20">
         <motion.h2
           variants={fade}
@@ -65,7 +65,7 @@ const AboutPage = () => (
           transition={{ duration: 0.5 }}
           className="text-3xl md:text-4xl font-bold text-foreground text-center mb-12"
         >
-          Why PDFly?
+          Why Convertify?
         </motion.h2>
         <div className="grid sm:grid-cols-2 gap-5">
           {whyItems.map((item, i) => (

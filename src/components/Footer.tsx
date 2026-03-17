@@ -57,7 +57,7 @@ const Footer = () => (
         ))}
       </div>
       <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
-        Built by Prasad Shivaji Sarnaik
+        © 2026 Convertify. All rights reserved.
       </div>
     </div>
   </footer>

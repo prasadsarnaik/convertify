@@ -20,15 +20,15 @@ const Hero = () => {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.08] text-balance">
-            All Your File Tools.
+            Convert Anything
             <br />
             <span className="bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent">
-              One Beautiful Workspace.
+              Instantly.
             </span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Convert, compress and optimize PDFs and images instantly.
+            The easiest way to convert, compress, and edit your files online. Fast, secure, and completely free.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
