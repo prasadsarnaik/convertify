@@ -83,22 +83,18 @@
 @keyframes status-dot-pulse {
   0%, 100% {
     background-color: hsl(142, 69%, 49%);
-    box-shadow: 0 0 6px 2px hsla(142, 69%, 49%, 0.45);
     opacity: 1;
   }
   25% {
     background-color: hsl(211, 100%, 44.5%);
-    box-shadow: 0 0 6px 2px hsla(211, 100%, 44.5%, 0.45);
     opacity: 0.85;
   }
   50% {
     background-color: hsl(37, 100%, 52%);
-    box-shadow: 0 0 6px 2px hsla(37, 100%, 52%, 0.45);
     opacity: 1;
   }
   75% {
     background-color: hsl(349, 100%, 59%);
-    box-shadow: 0 0 6px 2px hsla(349, 100%, 59%, 0.45);
     opacity: 0.85;
   }
 }
