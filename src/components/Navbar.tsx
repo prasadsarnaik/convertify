@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import convertifyLogo from "@/assets/convertify-logo.png";
 import { useState, useEffect, useRef, useCallback } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Tools", href: "/tools" },
@@ -69,26 +70,32 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <Link
-            to="/tools"
-            className="hidden lg:block px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            Start Free
-          </Link>
+          {/* Desktop CTA + Toggle */}
+          <div className="hidden lg:flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              to="/tools"
+              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              Start Free
+            </Link>
+          </div>
 
-          {/* Mobile hamburger — shown below lg */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden p-2 rounded-xl hover:bg-muted transition-colors shrink-0"
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? (
-              <X className="w-5 h-5 text-foreground" />
-            ) : (
-              <Menu className="w-5 h-5 text-foreground" />
-            )}
-          </button>
+          {/* Mobile: Toggle + hamburger */}
+          <div className="flex lg:hidden items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={toggleMenu}
+              className="p-2 rounded-xl hover:bg-muted transition-colors shrink-0"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? (
+                <X className="w-5 h-5 text-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu panel */}
