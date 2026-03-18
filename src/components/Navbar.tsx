@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import convertifyLogo from "@/assets/convertify-logo.png";
 import { useState, useEffect, useRef, useCallback } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { label: "Tools", href: "/tools" },
