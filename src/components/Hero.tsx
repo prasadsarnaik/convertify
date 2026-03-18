@@ -15,7 +15,7 @@ const Hero = () => {
           transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full border border-border bg-card text-sm text-muted-foreground font-medium">
-            <span className="w-2 h-2 rounded-full bg-accent-green" />
+            <span className="status-dot" />
             Free &amp; Fast — No sign-up required
           </div>
 
