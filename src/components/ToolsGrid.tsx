@@ -21,6 +21,7 @@ const tools = [
   { name: "HEIC to JPG", desc: "Convert HEIC to JPG", icon: Image, color: "from-accent-pink to-accent-purple", slug: "heic-to-jpg" },
   { name: "Resize Image", desc: "Resize images to any size", icon: Shrink, color: "from-accent-orange to-accent-green", slug: "resize-image" },
   { name: "Compress Image", desc: "Reduce image file size", icon: Archive, color: "from-accent-blue to-accent-orange", slug: "compress-image" },
+  { name: "Rotate Image", desc: "Rotate images to any angle", icon: RotateCw, color: "from-accent-green to-accent-purple", slug: "rotate-image" },
 ];
 
 const ToolsGrid = () => {
