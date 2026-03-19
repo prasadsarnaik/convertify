@@ -15,6 +15,8 @@ const ToolPage = () => {
       <Navbar />
       {slug === "edit-pdf" ? (
         <EditPdfWorkspace />
+      ) : slug === "rotate-image" ? (
+        <RotateImageWorkspace />
       ) : (
         <ToolWorkspace toolName={formatSlug(slug || "")} toolSlug={slug || ""} />
       )}
