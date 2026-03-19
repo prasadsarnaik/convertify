@@ -201,7 +201,7 @@ const EditPdfWorkspace = () => {
       });
 
       const pdfBytes = await pdfDocLib.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = "edited.pdf";
