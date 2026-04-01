@@ -244,6 +244,7 @@ const ImageUpscalerWorkspace = () => {
           {upscaled && !processing && (
             <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8">
               {/* Comparison slider */}
+              <div className="space-y-8">
               <div
                 ref={compareRef}
                 className="relative rounded-2xl overflow-hidden border border-border shadow-sm select-none touch-none cursor-col-resize"
