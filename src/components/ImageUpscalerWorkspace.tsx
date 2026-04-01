@@ -242,9 +242,8 @@ const ImageUpscalerWorkspace = () => {
 
           {/* Result with comparison slider */}
           {upscaled && !processing && (
-            <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-8">
+            <div className="space-y-8">
               {/* Comparison slider */}
-              <div className="space-y-8">
               <div
                 ref={compareRef}
                 className="relative rounded-2xl overflow-hidden border border-border shadow-sm select-none touch-none cursor-col-resize"
@@ -253,14 +252,11 @@ const ImageUpscalerWorkspace = () => {
                 onPointerLeave={onPointerUp}
                 onPointerMove={onPointerMove}
               >
-                {/* Upscaled (full width behind) */}
                 <img src={upscaled} alt="Upscaled" className="w-full max-h-[500px] object-contain bg-muted/30" />
-                {/* Original (clipped) */}
                 <div className="absolute inset-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
                   <img src={preview!} alt="Original" className="w-full max-h-[500px] object-contain bg-muted/30" style={{ minWidth: compareRef.current?.offsetWidth }} />
                   <span className="absolute top-3 left-3 text-xs font-semibold bg-background/80 backdrop-blur px-2 py-1 rounded-md text-foreground">Original</span>
                 </div>
-                {/* Divider */}
                 <div className="absolute top-0 bottom-0" style={{ left: `${sliderPos}%`, transform: "translateX(-50%)" }}>
                   <div className="w-0.5 h-full bg-primary/80" />
                   <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg">
@@ -270,7 +266,6 @@ const ImageUpscalerWorkspace = () => {
                 <span className="absolute top-3 right-3 text-xs font-semibold bg-background/80 backdrop-blur px-2 py-1 rounded-md text-foreground">Upscaled {scale}x</span>
               </div>
 
-              {/* Info + Download */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border bg-background">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ShieldCheck className="w-4 h-4 text-accent-green" /> No watermark · Your file stays private
@@ -285,13 +280,12 @@ const ImageUpscalerWorkspace = () => {
                 </div>
               </div>
 
-              {/* New image */}
               <div className="text-center">
                 <Button variant="ghost" onClick={() => { setFile(null); setPreview(null); setUpscaled(null); setProgress(0); }}>
                   Upload another image
                 </Button>
               </div>
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
       </div>
