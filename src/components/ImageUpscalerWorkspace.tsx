@@ -171,6 +171,7 @@ const ImageUpscalerWorkspace = () => {
             <Upload className="w-10 h-10 mx-auto text-muted-foreground mb-4" />
             <p className="text-foreground font-medium">Drag & drop an image here</p>
             <p className="text-muted-foreground text-sm mt-1">JPG, PNG, WebP · Max 10 MB</p>
+            </div>
           </motion.div>
         )}
 
