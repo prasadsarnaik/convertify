@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
-  Edit, FileUp, ArrowRightLeft, Shrink, Image,
+  Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -26,6 +26,7 @@ const imageTools = [
   { name: "HEIC to JPG", desc: "Convert HEIC to JPG", icon: Image, color: "from-accent-pink to-accent-purple", slug: "heic-to-jpg" },
   { name: "Resize Image", desc: "Resize images to any size", icon: Shrink, color: "from-accent-orange to-accent-green", slug: "resize-image" },
   { name: "Compress Image", desc: "Reduce image file size", icon: Archive, color: "from-accent-blue to-accent-orange", slug: "compress-image" },
+  { name: "Image Upscaler", desc: "Upscale images to HD/4K", icon: ZoomIn, color: "from-accent-purple to-accent-pink", slug: "image-upscaler" },
 ];
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
