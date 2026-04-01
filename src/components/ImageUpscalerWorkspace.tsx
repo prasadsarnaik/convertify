@@ -160,11 +160,13 @@ const ImageUpscalerWorkspace = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            {...getRootProps()}
-            className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-colors ${
-              isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
-            }`}
           >
+            <div
+              {...getRootProps()}
+              className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-colors ${
+                isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"
+              }`}
+            >
             <input {...getInputProps()} />
             <Upload className="w-10 h-10 mx-auto text-muted-foreground mb-4" />
             <p className="text-foreground font-medium">Drag & drop an image here</p>
