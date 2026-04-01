@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
-  Edit, FileUp, ArrowRightLeft, Shrink, Image,
+  Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
