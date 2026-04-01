@@ -7,6 +7,7 @@ import RotateImageWorkspace from "@/components/RotateImageWorkspace";
 import RotatePdfWorkspace from "@/components/RotatePdfWorkspace";
 import CompressPdfWorkspace from "@/components/CompressPdfWorkspace";
 import ImageToPdfWorkspace from "@/components/ImageToPdfWorkspace";
+import ImageUpscalerWorkspace from "@/components/ImageUpscalerWorkspace";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -18,6 +19,7 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "compress-pdf": CompressPdfWorkspace,
   "image-to-pdf": ImageToPdfWorkspace,
   "jpg-to-pdf": ImageToPdfWorkspace,
+  "image-upscaler": ImageUpscalerWorkspace,
 };
 
 const ToolPage = () => {
