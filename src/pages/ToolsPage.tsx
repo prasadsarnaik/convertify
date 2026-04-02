@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
   Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
+  Lock, Unlock, Pen,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -15,6 +16,9 @@ const pdfTools = [
   { name: "JPG to PDF", desc: "Turn images into a PDF", icon: ImagePlus, color: "from-accent-green to-accent-blue", slug: "jpg-to-pdf" },
   { name: "Rotate PDF", desc: "Rotate pages in a PDF", icon: RotateCw, color: "from-accent-blue to-accent-purple", slug: "rotate-pdf" },
   { name: "Edit PDF", desc: "Annotate and edit PDFs", icon: Edit, color: "from-accent-purple to-accent-pink", slug: "edit-pdf" },
+  { name: "Protect PDF", desc: "Secure your PDF with a password", icon: Lock, color: "from-accent-orange to-accent-pink", slug: "protect-pdf" },
+  { name: "Unlock PDF", desc: "Remove password from your PDF", icon: Unlock, color: "from-accent-green to-accent-purple", slug: "unlock-pdf" },
+  { name: "Sign PDF", desc: "Add your signature to a PDF", icon: Pen, color: "from-accent-blue to-accent-orange", slug: "sign-pdf" },
 ];
 
 const imageTools = [
