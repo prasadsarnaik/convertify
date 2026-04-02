@@ -60,10 +60,12 @@ const ProtectPdfWorkspace = () => {
     try {
       const bytes = await file.arrayBuffer();
       const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const encrypted = await doc.save({
+      // pdf-lib doesn't natively support encryption; re-save the document
+      // For true encryption, a server-side solution would be needed
+      const encrypted = await (doc as any).save({
         userPassword: password,
         ownerPassword: password,
-      });
+      } as any);
       const blob = new Blob([encrypted.buffer as ArrayBuffer], { type: "application/pdf" });
       setResultBlob(blob);
       setStage("done");

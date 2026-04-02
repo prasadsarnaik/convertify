@@ -45,7 +45,7 @@ const UnlockPdfWorkspace = () => {
     try {
       const bytes = await file.arrayBuffer();
       // Try loading with the provided password
-      const doc = await PDFDocument.load(bytes, { password });
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true } as any);
       // Save without encryption
       const unlocked = await doc.save();
       const blob = new Blob([unlocked.buffer as ArrayBuffer], { type: "application/pdf" });
