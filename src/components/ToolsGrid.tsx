@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
   Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
+  Lock, Unlock, Pen,
 } from "lucide-react";
 
 const tools = [
@@ -13,6 +14,9 @@ const tools = [
   { name: "JPG to PDF", desc: "Turn images into a PDF", icon: ImagePlus, color: "from-accent-green to-accent-blue", slug: "jpg-to-pdf" },
   { name: "Rotate PDF", desc: "Rotate pages in a PDF", icon: RotateCw, color: "from-accent-blue to-accent-purple", slug: "rotate-pdf" },
   { name: "Edit PDF", desc: "Annotate and edit PDFs", icon: Edit, color: "from-accent-purple to-accent-pink", slug: "edit-pdf" },
+  { name: "Protect PDF", desc: "Secure your PDF with a password", icon: Lock, color: "from-accent-orange to-accent-pink", slug: "protect-pdf" },
+  { name: "Unlock PDF", desc: "Remove password from your PDF", icon: Unlock, color: "from-accent-green to-accent-purple", slug: "unlock-pdf" },
+  { name: "Sign PDF", desc: "Add your signature to a PDF", icon: Pen, color: "from-accent-blue to-accent-orange", slug: "sign-pdf" },
   { name: "Image to PDF", desc: "Convert any image to PDF", icon: FileUp, color: "from-accent-pink to-accent-orange", slug: "image-to-pdf" },
   { name: "JPG to PNG", desc: "Convert JPG to PNG format", icon: ArrowRightLeft, color: "from-accent-blue to-accent-green", slug: "jpg-to-png" },
   { name: "PNG to JPG", desc: "Convert PNG to JPG format", icon: ArrowRightLeft, color: "from-accent-orange to-accent-pink", slug: "png-to-jpg" },
