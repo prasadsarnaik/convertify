@@ -94,8 +94,8 @@ async function encryptPdfBytes(
   doc.setSubject(
     JSON.stringify({
       v: 1,
-      salt: toBase64(salt),
-      iv: toBase64(iv),
+      salt: toBase64(salt.buffer as ArrayBuffer),
+      iv: toBase64(iv.buffer as ArrayBuffer),
       data: toBase64(encrypted),
     })
   );
