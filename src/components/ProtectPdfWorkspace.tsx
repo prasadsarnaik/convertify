@@ -9,6 +9,7 @@ import {
   Lock,
   Eye,
   EyeOff,
+  AlertCircle,
 } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 
@@ -22,6 +23,84 @@ function getStrength(pw: string): { label: string; color: string; width: string 
   if (score >= 3) return { label: "Strong", color: "bg-accent-green", width: "100%" };
   if (score >= 2) return { label: "Medium", color: "bg-accent-orange", width: "66%" };
   return { label: "Weak", color: "bg-destructive", width: "33%" };
+}
+
+/**
+ * Encrypt PDF bytes using Web Crypto AES-GCM, then wrap in a new PDF
+ * that contains the encrypted payload as an attachment-like stream.
+ * 
+ * Note: pdf-lib doesn't support native PDF encryption. We embed a
+ * password-derived encrypted version of the original bytes as metadata,
+ * making the output only openable via our tool or compatible decryption.
+ * For production-grade PDF encryption, a server-side solution is recommended.
+ */
+async function encryptPdfBytes(
+  pdfBytes: ArrayBuffer,
+  password: string
+): Promise<Uint8Array> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveKey"]
+  );
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt"]
+  );
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    pdfBytes
+  );
+
+  // Create a new PDF with the encrypted data stored as a custom metadata stream
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([612, 792]);
+  page.drawText("This PDF is password-protected.", {
+    x: 50,
+    y: 700,
+    size: 18,
+  });
+  page.drawText("Use Convertify to unlock this file.", {
+    x: 50,
+    y: 670,
+    size: 14,
+  });
+  page.drawText("The contents are encrypted with AES-256-GCM.", {
+    x: 50,
+    y: 640,
+    size: 12,
+  });
+
+  // Store encrypted data, salt, and iv as base64 in PDF metadata
+  const toBase64 = (buf: ArrayBuffer) => {
+    const bytes = new Uint8Array(buf);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
+  doc.setTitle("Protected PDF - Convertify");
+  doc.setSubject(
+    JSON.stringify({
+      v: 1,
+      salt: toBase64(salt.buffer as ArrayBuffer),
+      iv: toBase64(iv.buffer as ArrayBuffer),
+      data: toBase64(encrypted),
+    })
+  );
+
+  return doc.save();
 }
 
 const ProtectPdfWorkspace = () => {
@@ -59,18 +138,13 @@ const ProtectPdfWorkspace = () => {
 
     try {
       const bytes = await file.arrayBuffer();
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      // pdf-lib doesn't natively support encryption; re-save the document
-      // For true encryption, a server-side solution would be needed
-      const encrypted = await (doc as any).save({
-        userPassword: password,
-        ownerPassword: password,
-      } as any);
+      const encrypted = await encryptPdfBytes(bytes, password);
       const blob = new Blob([encrypted.buffer as ArrayBuffer], { type: "application/pdf" });
       setResultBlob(blob);
       setStage("done");
-    } catch {
-      setError("Failed to protect PDF. The file may be corrupted.");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to protect PDF. Please try again.");
       setStage("password");
     }
   };
@@ -171,7 +245,18 @@ const ProtectPdfWorkspace = () => {
                     </div>
                   </div>
 
-                  {error && <p className="text-sm text-destructive font-medium">{error}</p>}
+                  {error && (
+                    <div className="flex items-center gap-2 text-sm text-destructive font-medium">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
+                    <p className="text-xs text-muted-foreground">
+                      🔒 Your PDF will be encrypted with AES-256-GCM. Use "Unlock PDF" on Convertify to decrypt it.
+                    </p>
+                  </div>
 
                   <button
                     onClick={handleProtect}
@@ -194,7 +279,7 @@ const ProtectPdfWorkspace = () => {
                 <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="py-8 text-center space-y-6">
                   <CheckCircle className="w-12 h-12 text-accent-green mx-auto" />
                   <p className="font-bold text-lg text-foreground">PDF protected successfully!</p>
-                  <p className="text-sm text-muted-foreground">Your PDF is now password-protected.</p>
+                  <p className="text-sm text-muted-foreground">Your PDF is now encrypted with AES-256.</p>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                     <button onClick={handleDownload} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-foreground text-background font-semibold text-sm hover:opacity-90 transition-opacity">

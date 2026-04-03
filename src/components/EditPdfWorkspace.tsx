@@ -10,7 +10,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Undo2,
+  Loader2,
 } from "lucide-react";
+import { PDFDocument } from "pdf-lib";
 
 const EditPdfWorkspace = () => {
   const [pdfDoc, setPdfDoc] = useState<any>(null);
@@ -23,31 +25,28 @@ const EditPdfWorkspace = () => {
   const fabricRef = useRef<any>(null);
   const fileDataRef = useRef<ArrayBuffer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Store per-page annotation snapshots (fabric JSON)
+  const annotationsRef = useRef<Record<number, any>>({});
 
-  // Initialize fabric canvas
   useEffect(() => {
     if (stage !== "editing" || !canvasRef.current || fabricRef.current) return;
-
     const { fabric } = require("fabric") as any;
     const canvas = new fabric.Canvas(canvasRef.current, {
       backgroundColor: "#fff",
       selection: true,
     });
     fabricRef.current = canvas;
-
     return () => {
       canvas.dispose();
       fabricRef.current = null;
     };
   }, [stage]);
 
-  // Render current page
   useEffect(() => {
     if (!pdfDoc || !fabricRef.current) return;
     renderPage(currentPage);
   }, [currentPage, pdfDoc]);
 
-  // Responsive resize
   useEffect(() => {
     if (stage !== "editing") return;
     const handleResize = () => {
@@ -57,20 +56,29 @@ const EditPdfWorkspace = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [stage, pdfDoc, currentPage]);
 
+  // Save current page annotations before switching
+  const saveCurrentAnnotations = () => {
+    const canvas = fabricRef.current;
+    if (!canvas) return;
+    const objects = canvas.getObjects();
+    if (objects.length > 0) {
+      annotationsRef.current[currentPage] = canvas.toJSON();
+    } else {
+      delete annotationsRef.current[currentPage];
+    }
+  };
+
   const renderPage = async (pageNum: number) => {
     const canvas = fabricRef.current;
     if (!canvas || !pdfDoc) return;
 
     const page = await pdfDoc.getPage(pageNum);
-
-    // Calculate scale to fit container
     const containerWidth = containerRef.current?.clientWidth || 600;
     const maxWidth = Math.min(containerWidth - 48, 800);
     const unscaledViewport = page.getViewport({ scale: 1 });
     const scale = maxWidth / unscaledViewport.width;
     const viewport = page.getViewport({ scale });
 
-    // Render PDF page to temp canvas
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = viewport.width;
     tempCanvas.height = viewport.height;
@@ -78,16 +86,23 @@ const EditPdfWorkspace = () => {
     await page.render({ canvasContext: ctx, viewport }).promise;
 
     const bgUrl = tempCanvas.toDataURL();
-
     canvas.clear();
     canvas.setWidth(viewport.width);
     canvas.setHeight(viewport.height);
 
     const { fabric } = require("fabric") as any;
     fabric.Image.fromURL(bgUrl, (img: any) => {
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-        scaleX: 1,
-        scaleY: 1,
+      canvas.setBackgroundImage(img, () => {
+        // Restore annotations for this page if any
+        const saved = annotationsRef.current[pageNum];
+        if (saved) {
+          canvas.loadFromJSON(saved, () => {
+            // Re-set background since loadFromJSON clears it
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+          });
+        } else {
+          canvas.renderAll();
+        }
       });
     });
   };
@@ -143,13 +158,8 @@ const EditPdfWorkspace = () => {
         fabric.Image.fromURL(reader.result as string, (img: any) => {
           const canvas = fabricRef.current;
           if (!canvas) return;
-          // Scale image to fit within canvas
           const maxDim = Math.min(canvas.width!, canvas.height!) * 0.4;
-          const scaleFactor = Math.min(
-            maxDim / (img.width || 1),
-            maxDim / (img.height || 1),
-            1
-          );
+          const scaleFactor = Math.min(maxDim / (img.width || 1), maxDim / (img.height || 1), 1);
           img.scale(scaleFactor);
           img.set({ left: 50, top: 50 });
           canvas.add(img);
@@ -182,25 +192,83 @@ const EditPdfWorkspace = () => {
 
   const downloadPDF = async () => {
     const canvas = fabricRef.current;
-    if (!canvas) return;
+    if (!canvas || !fileDataRef.current || !pdfDoc) return;
 
     setIsDownloading(true);
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const pdfDocLib = await PDFDocument.create();
-      const imgData = canvas.toDataURL({ format: "png", multiplier: 2 });
-      const pngBytes = await fetch(imgData).then((r) => r.arrayBuffer());
-      const img = await pdfDocLib.embedPng(pngBytes);
+      // Save current page annotations
+      saveCurrentAnnotations();
 
-      const page = pdfDocLib.addPage([canvas.width!, canvas.height!]);
-      page.drawImage(img, {
-        x: 0,
-        y: 0,
-        width: canvas.width!,
-        height: canvas.height!,
-      });
+      const srcDoc = await PDFDocument.load(fileDataRef.current);
+      const outputDoc = await PDFDocument.create();
 
-      const pdfBytes = await pdfDocLib.save();
+      // Copy all pages from source
+      const copiedPages = await outputDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+
+      for (let i = 0; i < copiedPages.length; i++) {
+        const pageNum = i + 1;
+        const page = copiedPages[i];
+        outputDoc.addPage(page);
+
+        // If this page has annotations, render and overlay them
+        if (annotationsRef.current[pageNum]) {
+          const { width, height } = page.getSize();
+
+          // We need to render this page's annotations via fabric
+          // Render the page at export scale
+          const pdfPage = await pdfDoc.getPage(pageNum);
+          const unscaled = pdfPage.getViewport({ scale: 1 });
+          const exportScale = width / unscaled.width;
+
+          // Create a temporary fabric canvas to render annotations
+          const tempHtmlCanvas = document.createElement("canvas");
+          tempHtmlCanvas.width = width;
+          tempHtmlCanvas.height = height;
+
+          const { fabric } = require("fabric") as any;
+          const tempFabric = new fabric.StaticCanvas(tempHtmlCanvas, {
+            width,
+            height,
+          });
+
+          // Load the saved annotations
+          await new Promise<void>((resolve) => {
+            tempFabric.loadFromJSON(annotationsRef.current[pageNum], () => {
+              // Scale annotations to match export size
+              const savedW = annotationsRef.current[pageNum].width || canvas.width!;
+              const scaleFactor = width / savedW;
+              tempFabric.getObjects().forEach((obj: any) => {
+                obj.scaleX = (obj.scaleX || 1) * scaleFactor;
+                obj.scaleY = (obj.scaleY || 1) * scaleFactor;
+                obj.left = (obj.left || 0) * scaleFactor;
+                obj.top = (obj.top || 0) * scaleFactor;
+                obj.setCoords();
+              });
+              tempFabric.setBackgroundImage(null as any, () => {});
+              tempFabric.backgroundColor = "transparent";
+              tempFabric.renderAll();
+              resolve();
+            });
+          });
+
+          // Get the annotation overlay as PNG
+          const dataUrl = tempFabric.toDataURL({ format: "png" });
+          const pngBytes = await fetch(dataUrl).then((r) => r.arrayBuffer());
+          const overlayImg = await outputDoc.embedPng(pngBytes);
+
+          // Draw overlay on top of the page
+          page.drawImage(overlayImg, {
+            x: 0,
+            y: 0,
+            width,
+            height,
+          });
+
+          tempFabric.dispose();
+        }
+      }
+
+      const pdfBytes = await outputDoc.save();
       const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -214,6 +282,7 @@ const EditPdfWorkspace = () => {
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
+      saveCurrentAnnotations();
       setCurrentPage(page);
     }
   };
@@ -221,96 +290,49 @@ const EditPdfWorkspace = () => {
   return (
     <div className="min-h-screen pt-28 pb-20">
       <div className="container max-w-5xl mx-auto px-4 sm:px-6" ref={containerRef}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-2">
-            Edit PDF
-          </h1>
-          <p className="text-muted-foreground text-center mb-8">
-            Add text, images, and annotations to your PDF.
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-2">Edit PDF</h1>
+          <p className="text-muted-foreground text-center mb-8">Add text, images, and annotations to your PDF.</p>
 
           <AnimatePresence mode="wait">
             {stage === "upload" && (
-              <motion.div
-                key="upload"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="max-w-2xl mx-auto"
-              >
+              <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-2xl mx-auto">
                 <div className="rounded-2xl border border-border bg-background shadow-stage p-8">
                   <div
                     {...getRootProps()}
                     className={`border-2 border-dashed rounded-xl p-14 text-center cursor-pointer transition-colors ${
-                      isDragActive
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-muted-foreground/30"
+                      isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
                     }`}
                   >
                     <input {...getInputProps()} />
                     <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                    <p className="font-semibold text-foreground">
-                      Drop your PDF here or click to upload
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      .pdf files supported
-                    </p>
+                    <p className="font-semibold text-foreground">Drop your PDF here or click to upload</p>
+                    <p className="text-sm text-muted-foreground mt-1">.pdf files supported</p>
                   </div>
                 </div>
               </motion.div>
             )}
 
             {stage === "editing" && (
-              <motion.div
-                key="editor"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="space-y-4"
-              >
+              <motion.div key="editor" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 {/* Toolbar */}
                 <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 rounded-2xl border border-border bg-background shadow-card">
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={addText}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                    >
-                      <Type className="w-4 h-4" />
-                      <span className="hidden sm:inline">Text</span>
+                    <button onClick={addText} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                      <Type className="w-4 h-4" /><span className="hidden sm:inline">Text</span>
                     </button>
-                    <button
-                      onClick={addImage}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                    >
-                      <ImagePlus className="w-4 h-4" />
-                      <span className="hidden sm:inline">Image</span>
+                    <button onClick={addImage} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                      <ImagePlus className="w-4 h-4" /><span className="hidden sm:inline">Image</span>
                     </button>
-                    <button
-                      onClick={deleteSelected}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Delete</span>
+                    <button onClick={deleteSelected} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors">
+                      <Trash2 className="w-4 h-4" /><span className="hidden sm:inline">Delete</span>
                     </button>
-                    <button
-                      onClick={clearAnnotations}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
-                    >
-                      <Undo2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Clear</span>
+                    <button onClick={clearAnnotations} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-card border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors">
+                      <Undo2 className="w-4 h-4" /><span className="hidden sm:inline">Clear</span>
                     </button>
                   </div>
-
-                  <button
-                    onClick={downloadPDF}
-                    disabled={isDownloading}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
-                  >
-                    <Download className="w-4 h-4" />
+                  <button onClick={downloadPDF} disabled={isDownloading} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50">
+                    {isDownloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
                     {isDownloading ? "Saving…" : "Download"}
                   </button>
                 </div>
@@ -318,31 +340,18 @@ const EditPdfWorkspace = () => {
                 {/* Canvas area */}
                 <div className="rounded-2xl border border-border bg-card shadow-stage p-4 sm:p-6 overflow-x-auto">
                   <div className="flex justify-center">
-                    <canvas
-                      ref={canvasRef}
-                      className="rounded-xl shadow-card-hover"
-                    />
+                    <canvas ref={canvasRef} className="rounded-xl shadow-card-hover" />
                   </div>
                 </div>
 
                 {/* Page navigation */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-center gap-4 py-3">
-                    <button
-                      onClick={() => goToPage(currentPage - 1)}
-                      disabled={currentPage <= 1}
-                      className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30"
-                    >
+                    <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
                       <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <span className="text-sm font-medium text-foreground">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                      onClick={() => goToPage(currentPage + 1)}
-                      disabled={currentPage >= totalPages}
-                      className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30"
-                    >
+                    <span className="text-sm font-medium text-foreground">Page {currentPage} of {totalPages}</span>
+                    <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
