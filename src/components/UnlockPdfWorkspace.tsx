@@ -13,6 +13,71 @@ import {
 } from "lucide-react";
 import { PDFDocument } from "pdf-lib";
 
+/**
+ * Attempt to decrypt a Convertify-protected PDF.
+ * Returns the original PDF bytes if successful.
+ */
+async function decryptPdfBytes(
+  pdfBytes: ArrayBuffer,
+  password: string
+): Promise<Uint8Array> {
+  // First, try to load and check if it's a Convertify-encrypted PDF
+  const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+  const subject = doc.getSubject();
+
+  if (subject) {
+    try {
+      const meta = JSON.parse(subject);
+      if (meta.v === 1 && meta.salt && meta.iv && meta.data) {
+        // It's a Convertify-encrypted PDF - decrypt it
+        const fromBase64 = (b64: string) => {
+          const binary = atob(b64);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+          }
+          return bytes;
+        };
+
+        const salt = fromBase64(meta.salt);
+        const iv = fromBase64(meta.iv);
+        const encryptedData = fromBase64(meta.data);
+
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          enc.encode(password),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+        const key = await crypto.subtle.deriveKey(
+          { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
+          key,
+          encryptedData
+        );
+
+        return new Uint8Array(decrypted);
+      }
+    } catch {
+      // Not a valid Convertify-encrypted PDF or wrong password
+      throw new Error("decrypt_failed");
+    }
+  }
+
+  // For non-Convertify PDFs, try to load with ignoreEncryption and re-save
+  const out = await doc.save();
+  return out;
+}
+
 const UnlockPdfWorkspace = () => {
   const [file, setFile] = useState<File | null>(null);
   const [stage, setStage] = useState<"upload" | "password" | "processing" | "done">("upload");
@@ -20,12 +85,34 @@ const UnlockPdfWorkspace = () => {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
+  const [isConvertifyEncrypted, setIsConvertifyEncrypted] = useState(false);
 
-  const onDrop = useCallback((accepted: File[]) => {
+  const onDrop = useCallback(async (accepted: File[]) => {
     if (accepted.length > 0) {
-      setFile(accepted[0]);
-      setStage("password");
+      const f = accepted[0];
+      setFile(f);
       setError("");
+
+      // Check if it's a Convertify-encrypted PDF
+      try {
+        const bytes = await f.arrayBuffer();
+        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const subject = doc.getSubject();
+        if (subject) {
+          try {
+            const meta = JSON.parse(subject);
+            if (meta.v === 1) {
+              setIsConvertifyEncrypted(true);
+              setStage("password");
+              return;
+            }
+          } catch {}
+        }
+      } catch {}
+
+      // For standard PDFs, also show password prompt
+      setIsConvertifyEncrypted(false);
+      setStage("password");
     }
   }, []);
 
@@ -44,19 +131,15 @@ const UnlockPdfWorkspace = () => {
 
     try {
       const bytes = await file.arrayBuffer();
-      // Try loading with the provided password
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true } as any);
-      // Save without encryption
-      const unlocked = await doc.save();
-      const blob = new Blob([unlocked.buffer as ArrayBuffer], { type: "application/pdf" });
+      const decrypted = await decryptPdfBytes(bytes, password);
+      const blob = new Blob([decrypted.buffer as ArrayBuffer], { type: "application/pdf" });
       setResultBlob(blob);
       setStage("done");
     } catch (err: any) {
-      const msg = err?.message || "";
-      if (msg.includes("password") || msg.includes("encrypt") || msg.includes("decrypt")) {
+      if (err?.message === "decrypt_failed" || err?.name === "OperationError") {
         setError("Incorrect password. Please try again.");
       } else {
-        setError("Failed to unlock PDF. The file may be corrupted or not password-protected.");
+        setError("Failed to unlock PDF. The file may be corrupted or use unsupported encryption.");
       }
       setStage("password");
     }
@@ -78,6 +161,7 @@ const UnlockPdfWorkspace = () => {
     setResultBlob(null);
     setPassword("");
     setError("");
+    setIsConvertifyEncrypted(false);
     setStage("upload");
   };
 
@@ -112,7 +196,10 @@ const UnlockPdfWorkspace = () => {
                     <Unlock className="w-5 h-5 text-muted-foreground shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{file?.name}</p>
-                      <p className="text-xs text-muted-foreground">{file ? `${(file.size / 1024).toFixed(0)} KB` : ""}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {file ? `${(file.size / 1024).toFixed(0)} KB` : ""}
+                        {isConvertifyEncrypted && " · Convertify encrypted"}
+                      </p>
                     </div>
                   </div>
 
@@ -137,6 +224,14 @@ const UnlockPdfWorkspace = () => {
                     <div className="flex items-center gap-2 text-sm text-destructive font-medium">
                       <AlertCircle className="w-4 h-4 shrink-0" />
                       {error}
+                    </div>
+                  )}
+
+                  {!isConvertifyEncrypted && (
+                    <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
+                      <p className="text-xs text-muted-foreground">
+                        ℹ️ This PDF uses standard encryption. We'll attempt to remove the password protection.
+                      </p>
                     </div>
                   )}
 

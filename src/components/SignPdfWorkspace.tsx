@@ -12,6 +12,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { PDFDocument } from "pdf-lib";
 
 type SignatureMode = "draw" | "upload" | "type";
 
@@ -38,8 +39,10 @@ const SignPdfWorkspace = () => {
   const drawCanvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
   const fileRef = useRef<File | null>(null);
+  const fileDataRef = useRef<ArrayBuffer | null>(null);
+  // Store per-page annotation snapshots
+  const annotationsRef = useRef<Record<number, any>>({});
 
-  // Load Google Fonts for typed signatures
   useEffect(() => {
     if (!document.getElementById("sig-fonts")) {
       const link = document.createElement("link");
@@ -50,7 +53,6 @@ const SignPdfWorkspace = () => {
     }
   }, []);
 
-  // Init fabric canvas
   useEffect(() => {
     if (stage !== "sign" || !canvasRef.current || fabricRef.current) return;
     const { fabric } = require("fabric") as any;
@@ -62,6 +64,17 @@ const SignPdfWorkspace = () => {
   useEffect(() => {
     if (pdfDoc && fabricRef.current) renderPage(currentPage);
   }, [currentPage, pdfDoc]);
+
+  const saveCurrentAnnotations = () => {
+    const canvas = fabricRef.current;
+    if (!canvas) return;
+    const objects = canvas.getObjects();
+    if (objects.length > 0) {
+      annotationsRef.current[currentPage] = canvas.toJSON();
+    } else {
+      delete annotationsRef.current[currentPage];
+    }
+  };
 
   const renderPage = async (pageNum: number) => {
     const canvas = fabricRef.current;
@@ -86,7 +99,16 @@ const SignPdfWorkspace = () => {
 
     const { fabric } = require("fabric") as any;
     fabric.Image.fromURL(bgUrl, (img: any) => {
-      canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+      canvas.setBackgroundImage(img, () => {
+        const saved = annotationsRef.current[pageNum];
+        if (saved) {
+          canvas.loadFromJSON(saved, () => {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+          });
+        } else {
+          canvas.renderAll();
+        }
+      });
     });
   };
 
@@ -95,6 +117,7 @@ const SignPdfWorkspace = () => {
     const pdfjsLib = await import("pdfjs-dist");
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     const ab = await file.arrayBuffer();
+    fileDataRef.current = ab.slice(0);
     const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
     setPdfDoc(pdf);
     setTotalPages(pdf.numPages);
@@ -112,7 +135,6 @@ const SignPdfWorkspace = () => {
     multiple: false,
   });
 
-  // --- Drawing pad ---
   const startDraw = (e: React.PointerEvent) => {
     const cvs = drawCanvasRef.current;
     if (!cvs) return;
@@ -141,7 +163,6 @@ const SignPdfWorkspace = () => {
     cvs.getContext("2d")!.clearRect(0, 0, cvs.width, cvs.height);
   };
 
-  // --- Place signature on PDF canvas ---
   const placeSignature = () => {
     const canvas = fabricRef.current;
     if (!canvas) return;
@@ -194,17 +215,59 @@ const SignPdfWorkspace = () => {
 
   const downloadPDF = async () => {
     const canvas = fabricRef.current;
-    if (!canvas) return;
+    if (!canvas || !fileDataRef.current || !pdfDoc) return;
     setIsDownloading(true);
     try {
-      const { PDFDocument } = await import("pdf-lib");
-      const pdfDocLib = await PDFDocument.create();
-      const imgData = canvas.toDataURL({ format: "png", multiplier: 2 });
-      const pngBytes = await fetch(imgData).then((r) => r.arrayBuffer());
-      const img = await pdfDocLib.embedPng(pngBytes);
-      const page = pdfDocLib.addPage([canvas.width!, canvas.height!]);
-      page.drawImage(img, { x: 0, y: 0, width: canvas.width!, height: canvas.height! });
-      const pdfBytes = await pdfDocLib.save();
+      saveCurrentAnnotations();
+
+      const srcDoc = await PDFDocument.load(fileDataRef.current);
+      const outputDoc = await PDFDocument.create();
+      const copiedPages = await outputDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+
+      for (let i = 0; i < copiedPages.length; i++) {
+        const pageNum = i + 1;
+        const page = copiedPages[i];
+        outputDoc.addPage(page);
+
+        if (annotationsRef.current[pageNum]) {
+          const { width, height } = page.getSize();
+          const pdfPage = await pdfDoc.getPage(pageNum);
+          const unscaled = pdfPage.getViewport({ scale: 1 });
+
+          const tempHtmlCanvas = document.createElement("canvas");
+          tempHtmlCanvas.width = width;
+          tempHtmlCanvas.height = height;
+
+          const { fabric } = require("fabric") as any;
+          const tempFabric = new fabric.StaticCanvas(tempHtmlCanvas, { width, height });
+
+          await new Promise<void>((resolve) => {
+            tempFabric.loadFromJSON(annotationsRef.current[pageNum], () => {
+              const savedW = annotationsRef.current[pageNum].width || canvas.width!;
+              const scaleFactor = width / savedW;
+              tempFabric.getObjects().forEach((obj: any) => {
+                obj.scaleX = (obj.scaleX || 1) * scaleFactor;
+                obj.scaleY = (obj.scaleY || 1) * scaleFactor;
+                obj.left = (obj.left || 0) * scaleFactor;
+                obj.top = (obj.top || 0) * scaleFactor;
+                obj.setCoords();
+              });
+              tempFabric.setBackgroundImage(null as any, () => {});
+              tempFabric.backgroundColor = "transparent";
+              tempFabric.renderAll();
+              resolve();
+            });
+          });
+
+          const dataUrl = tempFabric.toDataURL({ format: "png" });
+          const pngBytes = await fetch(dataUrl).then((r) => r.arrayBuffer());
+          const overlayImg = await outputDoc.embedPng(pngBytes);
+          page.drawImage(overlayImg, { x: 0, y: 0, width, height });
+          tempFabric.dispose();
+        }
+      }
+
+      const pdfBytes = await outputDoc.save();
       const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
@@ -228,6 +291,13 @@ const SignPdfWorkspace = () => {
       reader.readAsDataURL(f);
     };
     input.click();
+  };
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      saveCurrentAnnotations();
+      setCurrentPage(page);
+    }
   };
 
   const modes: { key: SignatureMode; icon: typeof Pen; label: string }[] = [
@@ -285,11 +355,11 @@ const SignPdfWorkspace = () => {
                     </div>
                     {totalPages > 1 && (
                       <div className="flex items-center justify-center gap-4 pt-4">
-                        <button onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)} disabled={currentPage <= 1} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
+                        <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
                           <ChevronLeft className="w-4 h-4" />
                         </button>
                         <span className="text-sm font-medium text-foreground">Page {currentPage} of {totalPages}</span>
-                        <button onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
+                        <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages} className="p-2 rounded-xl border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-30">
                           <ChevronRight className="w-4 h-4" />
                         </button>
                       </div>
@@ -300,7 +370,6 @@ const SignPdfWorkspace = () => {
                   <div className="rounded-2xl border border-border bg-background shadow-stage p-5 space-y-4">
                     <p className="font-semibold text-foreground text-sm">Create Signature</p>
 
-                    {/* Mode tabs */}
                     <div className="flex rounded-xl border border-border overflow-hidden">
                       {modes.map((m) => (
                         <button
@@ -315,7 +384,6 @@ const SignPdfWorkspace = () => {
                       ))}
                     </div>
 
-                    {/* Draw */}
                     {signatureMode === "draw" && (
                       <div className="space-y-3">
                         <div className="border border-border rounded-xl overflow-hidden bg-card">
@@ -337,7 +405,6 @@ const SignPdfWorkspace = () => {
                       </div>
                     )}
 
-                    {/* Upload */}
                     {signatureMode === "upload" && (
                       <div className="space-y-3">
                         {signatureImg ? (
@@ -357,7 +424,6 @@ const SignPdfWorkspace = () => {
                       </div>
                     )}
 
-                    {/* Type */}
                     {signatureMode === "type" && (
                       <div className="space-y-3">
                         <input
