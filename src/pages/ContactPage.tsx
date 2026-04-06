@@ -84,6 +84,9 @@ const ContactPage = () => {
                   <Button type="submit" className="w-full rounded-full gap-2">
                     <Send className="w-4 h-4" /> Send Message
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center mt-3">
+                    This is a demo form. Messages are not delivered yet.
+                  </p>
                 </motion.form>
               )}
             </AnimatePresence>
