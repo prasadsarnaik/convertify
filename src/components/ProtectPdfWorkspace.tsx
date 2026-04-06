@@ -83,9 +83,10 @@ async function encryptPdfBytes(
   // Store encrypted data, salt, and iv as base64 in PDF metadata
   const toBase64 = (buf: ArrayBuffer) => {
     const bytes = new Uint8Array(buf);
+    const chunkSize = 8192;
     let binary = "";
-    for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
     }
     return btoa(binary);
   };
