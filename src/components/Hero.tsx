@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FileText, Image, ArrowRight } from "lucide-react";
+import { FileText, Image, FileCheck, ArrowRight } from "lucide-react";
 
 const Hero = () => {
   const scrollTo = (id: string) => {
