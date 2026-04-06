@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Heart, Zap, Shield, Sparkles, User } from "lucide-react";
+import { Heart, Zap, Shield, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -99,9 +99,13 @@ const AboutPage = () => (
           whileHover={{ y: -4 }}
           className="text-center p-8 rounded-2xl border border-border bg-card shadow-card"
         >
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-purple to-accent-pink flex items-center justify-center mx-auto mb-5">
-            <User className="w-9 h-9 text-primary-foreground" />
-          </div>
+          <motion.div
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-accent-purple to-accent-pink flex items-center justify-center mx-auto mb-5 text-4xl"
+            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            👨‍💻
+          </motion.div>
           <p className="text-sm text-muted-foreground mb-1">Built and designed by</p>
           <h3 className="text-xl font-bold text-foreground">Prasad Shivaji Sarnaik</h3>
           <p className="text-sm text-muted-foreground mt-1">UI/UX Designer</p>
