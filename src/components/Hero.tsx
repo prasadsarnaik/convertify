@@ -56,7 +56,7 @@ const Hero = () => {
           {[
             { icon: FileText, color: "from-accent-blue to-accent-purple", delay: 0 },
             { icon: Image, color: "from-accent-pink to-accent-orange", delay: 0.5 },
-            { icon: FileText, color: "from-accent-green to-accent-blue", delay: 1 },
+            { icon: FileCheck, color: "from-accent-green to-accent-blue", delay: 1 },
           ].map((item, i) => (
             <motion.div
               key={i}
