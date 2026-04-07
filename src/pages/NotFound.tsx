@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { motion } from "framer-motion";
@@ -15,6 +16,7 @@ const NotFound = () => {
 
   return (
     <>
+      <SEO title="Page Not Found" description="The page you're looking for doesn't exist. Return to Convertify's homepage." path={location.pathname} />
       <Navbar />
       <main className="pt-28 pb-20 min-h-[80vh] flex items-center justify-center">
         <motion.div

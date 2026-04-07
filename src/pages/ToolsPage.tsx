@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -62,6 +63,7 @@ const ToolsPage = () => {
 
   return (
     <>
+      <SEO title="All Tools" description="Browse all Convertify tools — PDF merge, split, compress, edit, protect, unlock, sign, rotate, and image conversion, compression, resize, upscale tools." path="/tools" />
       <Navbar />
       <main className="pt-28 pb-20">
         <div className="container max-w-6xl mx-auto px-6">

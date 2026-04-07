@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +74,7 @@ const ToolStatusPage = () => {
 
   return (
     <>
+      <SEO title="Tool Status" description="Check the real-time status of all Convertify tools — see which tools are working, limited, or need attention." path="/tool-status" />
       <Navbar />
       <div className="min-h-screen pt-28 pb-20">
         <div className="container max-w-4xl mx-auto px-6">

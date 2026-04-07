@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
@@ -7,6 +8,7 @@ import Footer from "@/components/Footer";
 
 const Index = () => (
   <>
+    <SEO title="Convert Anything Instantly" description="The easiest way to convert, compress, and edit your files online. Fast, secure, and completely free." path="/" />
     <Navbar />
     <Hero />
     <ToolsGrid />

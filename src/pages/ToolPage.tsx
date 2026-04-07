@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -34,6 +35,7 @@ const ToolPage = () => {
 
   return (
     <>
+      <SEO title={formatSlug(slug || "")} description={`Use Convertify's ${formatSlug(slug || "")} tool — fast, free, and secure online file processing.`} path={`/tool/${slug}`} />
       <Navbar />
       {Workspace ? (
         <Workspace />

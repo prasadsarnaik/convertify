@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Upload, Settings, Download } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -13,6 +14,7 @@ const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const HowItWorksPage = () => (
   <>
+    <SEO title="How It Works" description="Learn how Convertify works in three simple steps — upload your file, choose a tool, and download the result instantly." path="/how-it-works" />
     <Navbar />
     <main className="pt-28 pb-20">
       <div className="container max-w-4xl mx-auto px-6">

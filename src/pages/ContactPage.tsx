@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Send, CheckCircle } from "lucide-react";
 import { useState } from "react";
@@ -19,6 +20,7 @@ const ContactPage = () => {
 
   return (
     <>
+      <SEO title="Contact Us" description="Get in touch with the Convertify team. We'd love to hear your feedback, questions, or suggestions." path="/contact" />
       <Navbar />
       <main className="pt-28 pb-20">
         <section className="container max-w-xl mx-auto px-6">

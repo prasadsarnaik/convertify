@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Zap, Shield, Layers, Smartphone } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -14,6 +15,7 @@ const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const FeaturesPage = () => (
   <>
+    <SEO title="Features" description="Discover Convertify's powerful features — lightning fast processing, secure file handling, batch conversion, and mobile-friendly design." path="/features" />
     <Navbar />
     <main className="pt-28 pb-20">
       <div className="container max-w-5xl mx-auto px-6">
