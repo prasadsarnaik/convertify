@@ -20,6 +20,7 @@ const ContactPage = () => {
 
   return (
     <>
+      <SEO title="Contact Us" description="Get in touch with the Convertify team. We'd love to hear your feedback, questions, or suggestions." path="/contact" />
       <Navbar />
       <main className="pt-28 pb-20">
         <section className="container max-w-xl mx-auto px-6">

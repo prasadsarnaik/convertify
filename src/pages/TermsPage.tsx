@@ -80,7 +80,9 @@ const TermsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="Terms & Conditions" description="Read Convertify's terms and conditions for using our free online file conversion and editing tools." path="/terms" />
+      <div className="min-h-screen bg-background">
       <div
         className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-accent-purple to-accent-pink z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}

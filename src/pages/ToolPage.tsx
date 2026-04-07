@@ -34,7 +34,7 @@ const ToolPage = () => {
   const Workspace = slug ? DEDICATED_WORKSPACES[slug] : undefined;
 
   return (
-    <>
+      <SEO title={formatSlug(slug || "")} description={`Use Convertify's ${formatSlug(slug || "")} tool — fast, free, and secure online file processing.`} path={`/tool/${slug}`} />
       <Navbar />
       {Workspace ? (
         <Workspace />

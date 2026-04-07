@@ -70,7 +70,9 @@ const PrivacyPolicyPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEO title="Privacy Policy" description="Read Convertify's privacy policy. Learn how we handle your data with transparency and care." path="/privacy" />
+      <div className="min-h-screen bg-background">
       <div
         className="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-accent-blue to-accent-purple z-50 transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
