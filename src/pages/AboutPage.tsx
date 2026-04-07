@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Heart, Zap, Shield, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";

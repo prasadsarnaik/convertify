@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Send, CheckCircle } from "lucide-react";
 import { useState } from "react";

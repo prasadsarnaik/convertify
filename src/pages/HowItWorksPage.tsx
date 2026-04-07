@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Upload, Settings, Download } from "lucide-react";
 import Navbar from "@/components/Navbar";
