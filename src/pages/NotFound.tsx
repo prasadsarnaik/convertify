@@ -15,7 +15,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <>
+    <SEO title="Page Not Found" description="The page you're looking for doesn't exist. Return to Convertify's homepage." path={location.pathname} />
       <Navbar />
       <main className="pt-28 pb-20 min-h-[80vh] flex items-center justify-center">
         <motion.div

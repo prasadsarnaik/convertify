@@ -14,7 +14,7 @@ const whyItems = [
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const AboutPage = () => (
-  <>
+  <SEO title="About" description="Learn about Convertify — a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful." path="/about" />
     <Navbar />
     <main className="pt-28 pb-20">
       {/* Hero */}
