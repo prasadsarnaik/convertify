@@ -134,6 +134,7 @@ const TermsPage = () => {
       </main>
       <Footer />
     </div>
+    </>
   );
 };
 
