@@ -18,4 +18,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          pdf: ["pdfjs-dist"],
+          heic: ["heic2any"],
+        },
+      },
+    },
+  },
 }));

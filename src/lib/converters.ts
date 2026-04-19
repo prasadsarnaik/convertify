@@ -187,11 +187,12 @@ async function rotatePdf(
 }
 
 async function pdfToJpg(file: File): Promise<{ blob: Blob; name: string }> {
-  const pdfjsLib = await import("pdfjs-dist");
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+  const pdfjs = await import("pdfjs-dist");
+  const pdfWorker = await import("pdfjs-dist/build/pdf.worker?url");
+  pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker.default;
 
   const bytes = await readAsArrayBuffer(file);
-  const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+  const pdf = await pdfjs.getDocument({ data: bytes }).promise;
   const zip = new JSZip();
 
   for (let i = 1; i <= pdf.numPages; i++) {

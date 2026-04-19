@@ -77,10 +77,8 @@ const ImageUpscalerWorkspace = () => {
     setProgress(55);
     await tick();
 
-    // Step 3 – sharpen via unsharp-mask convolution
-    if (enhanceFaces || true) {
-      sharpen(ctx, w, h, enhanceFaces ? 0.7 : 0.4);
-    }
+    // Step 3 – always sharpen, with a stronger pass when face enhancement is enabled
+    sharpen(ctx, w, h, enhanceFaces ? 0.7 : 0.4);
     setProgress(80);
     await tick();
 

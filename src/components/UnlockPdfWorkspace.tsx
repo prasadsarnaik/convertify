@@ -106,9 +106,13 @@ const UnlockPdfWorkspace = () => {
               setStage("password");
               return;
             }
-          } catch {}
+          } catch {
+            // Ignore malformed metadata and treat the PDF as standard encrypted input.
+          }
         }
-      } catch {}
+      } catch {
+        // If metadata inspection fails, continue to the regular password flow.
+      }
 
       // For standard PDFs, also show password prompt
       setIsConvertifyEncrypted(false);

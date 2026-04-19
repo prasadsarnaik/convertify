@@ -61,22 +61,7 @@ const SignPdfWorkspace = () => {
     return () => { canvas.dispose(); fabricRef.current = null; };
   }, [stage]);
 
-  useEffect(() => {
-    if (pdfDoc && fabricRef.current) renderPage(currentPage);
-  }, [currentPage, pdfDoc]);
-
-  const saveCurrentAnnotations = () => {
-    const canvas = fabricRef.current;
-    if (!canvas) return;
-    const objects = canvas.getObjects();
-    if (objects.length > 0) {
-      annotationsRef.current[currentPage] = canvas.toJSON();
-    } else {
-      delete annotationsRef.current[currentPage];
-    }
-  };
-
-  const renderPage = async (pageNum: number) => {
+  const renderPage = useCallback(async (pageNum: number) => {
     const canvas = fabricRef.current;
     if (!canvas || !pdfDoc) return;
     const page = await pdfDoc.getPage(pageNum);
@@ -110,15 +95,32 @@ const SignPdfWorkspace = () => {
         }
       });
     });
+  }, [pdfDoc]);
+
+  useEffect(() => {
+    if (pdfDoc && fabricRef.current) {
+      renderPage(currentPage);
+    }
+  }, [currentPage, pdfDoc, renderPage]);
+
+  const saveCurrentAnnotations = () => {
+    const canvas = fabricRef.current;
+    if (!canvas) return;
+    const objects = canvas.getObjects();
+    if (objects.length > 0) {
+      annotationsRef.current[currentPage] = canvas.toJSON();
+    } else {
+      delete annotationsRef.current[currentPage];
+    }
   };
 
   const loadPDF = async (file: File) => {
     fileRef.current = file;
-    const pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     const ab = await file.arrayBuffer();
     fileDataRef.current = ab.slice(0);
-    const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+    const pdf = await pdfjs.getDocument({ data: ab }).promise;
     setPdfDoc(pdf);
     setTotalPages(pdf.numPages);
     setCurrentPage(1);

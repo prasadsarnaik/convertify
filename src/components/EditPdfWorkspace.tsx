@@ -42,33 +42,7 @@ const EditPdfWorkspace = () => {
     };
   }, [stage]);
 
-  useEffect(() => {
-    if (!pdfDoc || !fabricRef.current) return;
-    renderPage(currentPage);
-  }, [currentPage, pdfDoc]);
-
-  useEffect(() => {
-    if (stage !== "editing") return;
-    const handleResize = () => {
-      if (pdfDoc && fabricRef.current) renderPage(currentPage);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [stage, pdfDoc, currentPage]);
-
-  // Save current page annotations before switching
-  const saveCurrentAnnotations = () => {
-    const canvas = fabricRef.current;
-    if (!canvas) return;
-    const objects = canvas.getObjects();
-    if (objects.length > 0) {
-      annotationsRef.current[currentPage] = canvas.toJSON();
-    } else {
-      delete annotationsRef.current[currentPage];
-    }
-  };
-
-  const renderPage = async (pageNum: number) => {
+  const renderPage = useCallback(async (pageNum: number) => {
     const canvas = fabricRef.current;
     if (!canvas || !pdfDoc) return;
 
@@ -105,15 +79,43 @@ const EditPdfWorkspace = () => {
         }
       });
     });
+  }, [pdfDoc]);
+
+  useEffect(() => {
+    if (!pdfDoc || !fabricRef.current) return;
+    renderPage(currentPage);
+  }, [currentPage, pdfDoc, renderPage]);
+
+  useEffect(() => {
+    if (stage !== "editing") return;
+    const handleResize = () => {
+      if (pdfDoc && fabricRef.current) {
+        renderPage(currentPage);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [stage, pdfDoc, currentPage, renderPage]);
+
+  // Save current page annotations before switching
+  const saveCurrentAnnotations = () => {
+    const canvas = fabricRef.current;
+    if (!canvas) return;
+    const objects = canvas.getObjects();
+    if (objects.length > 0) {
+      annotationsRef.current[currentPage] = canvas.toJSON();
+    } else {
+      delete annotationsRef.current[currentPage];
+    }
   };
 
   const loadPDF = async (file: File) => {
-    const pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
     const arrayBuffer = await file.arrayBuffer();
     fileDataRef.current = arrayBuffer.slice(0);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
     setPdfDoc(pdf);
     setTotalPages(pdf.numPages);
     setCurrentPage(1);
