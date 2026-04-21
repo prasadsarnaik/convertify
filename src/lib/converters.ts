@@ -238,6 +238,83 @@ async function imageToPdf(files: File[]): Promise<{ blob: Blob; name: string }> 
   return { blob: pdfBlob(out), name: "images.pdf" };
 }
 
+async function wordToPdf(file: File): Promise<{ blob: Blob; name: string }> {
+  const mammoth = await import("mammoth");
+  const arrayBuffer = await readAsArrayBuffer(file);
+  const result = await mammoth.convertToHtml({ arrayBuffer });
+  const html = result.value;
+
+  // Create a simple HTML document
+  const fullHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+h1, h2, h3 { margin-top: 20px; }
+p { margin: 10px 0; }
+</style>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+
+  // Create PDF from HTML using a canvas approach
+  const doc = await PDFDocument.create();
+  const page = doc.addPage();
+  const { width, height } = page.getSize();
+
+  // For simplicity, extract plain text and add to PDF
+  // Remove HTML tags for basic text extraction
+  const plainText = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const fontSize = 11;
+  const margin = 50;
+  const lineHeight = fontSize + 4;
+  const maxWidth = width - 2 * margin;
+
+  // Simple word wrapping
+  const words = plainText.split(' ');
+  let currentLine = '';
+  let y = height - margin;
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    // Rough estimate: each character is about 0.6 * fontSize width
+    if (testLine.length * fontSize * 0.6 > maxWidth) {
+      if (y < margin + lineHeight) {
+        // Add new page
+        const newPage = doc.addPage();
+        y = newPage.getSize().height - margin;
+      }
+      page.drawText(currentLine, {
+        x: margin,
+        y,
+        size: fontSize,
+      });
+      y -= lineHeight;
+      currentLine = word;
+    } else {
+      currentLine = testLine;
+    }
+  }
+
+  // Draw remaining text
+  if (currentLine && y >= margin) {
+    page.drawText(currentLine, {
+      x: margin,
+      y,
+      size: fontSize,
+    });
+  }
+
+  const pdfBytes = await doc.save();
+  const baseName = file.name.replace(/\.[^.]+$/, "");
+  return { blob: pdfBlob(pdfBytes), name: `${baseName}.pdf` };
+}
+
 // ─── Tool config & dispatcher ───────────────────────────────
 
 export interface ToolConfig {
@@ -306,6 +383,8 @@ export function getToolConfig(slug: string): ToolConfig {
       return { accept: ".avif", multiple: true };
     case "heic-to-jpg":
       return { accept: ".heic,.heif", multiple: true };
+    case "word-to-pdf":
+      return { accept: ".docx,.doc", multiple: false };
     case "resize-image":
       return {
         accept: "image/*",
@@ -397,6 +476,8 @@ export async function runConversion(
       for (const f of files) results.push(await convertHeicToJpg(f));
       return results;
     }
+    case "word-to-pdf":
+      return [await wordToPdf(files[0])];
     case "resize-image": {
       const w = Number(options.width || 800);
       const h = Number(options.height || 600);

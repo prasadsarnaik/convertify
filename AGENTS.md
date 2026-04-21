@@ -1,54 +1,59 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-This project is a Vite + React + TypeScript application.
+## Overview
+This repo is a Vite + React + TypeScript application for PDF and document tooling. Keep changes small and deliberate, and preserve the existing routing, component boundaries, and Tailwind-driven UI patterns unless the task clearly requires otherwise.
 
-- `src/pages/` contains route-level screens.
-- `src/components/` contains reusable feature components and tool workspaces.
-- `src/components/ui/` contains shared shadcn-style UI primitives and related helpers.
-- `src/hooks/` contains custom React hooks.
-- `src/lib/` contains shared utilities and converter logic.
-- `src/test/` contains Vitest setup and test files.
+## Project Layout
+- `src/pages/` contains route-level pages.
+- `src/components/` contains reusable sections and tool workspaces for PDF, image, and document flows.
+- `src/components/ui/` contains shared shadcn-style UI primitives.
+- `src/hooks/` contains reusable React hooks.
+- `src/lib/` contains shared utilities and document conversion logic.
+- `src/test/` contains Vitest setup and targeted test coverage.
 - `src/assets/` contains bundled static assets.
 - `public/` contains files served directly at runtime.
 
-Use the `@/` import alias for app code, for example `@/components/Navbar`.
+Use the `@/` alias for internal imports.
 
-## Build, Test, and Development Commands
+## Commands
 Run commands from the repository root.
 
 - `npm install` installs dependencies.
-- `npm run dev` starts the local Vite development server.
+- `npm run dev` starts the Vite development server.
 - `npm run build` creates the production build in `dist/`.
-- `npm run build:dev` creates a development-mode build for troubleshooting.
+- `npm run build:dev` creates a development-mode build for debugging.
 - `npm run preview` serves the latest production build locally.
 - `npm run lint` runs ESLint across the project.
-- `npm run test` runs the Vitest suite once in `jsdom`.
+- `npm run test` runs Vitest once in `jsdom`.
 - `npm run test:watch` starts Vitest in watch mode.
 
-## Coding Style & Naming Conventions
-Use TypeScript with 2-space indentation. Keep imports explicit and grouped logically.
+## Coding Conventions
+- Use TypeScript with 2-space indentation.
+- Keep imports explicit and grouped logically.
+- Use `PascalCase` for components and page files.
+- Use `useX` naming for hooks when appropriate.
+- Keep utility filenames in `src/lib/` short and lowercase.
+- Keep route-specific presentation in `src/pages/`; move reusable logic into `components`, `hooks`, or `lib`.
+- Write Tailwind classes inline in TSX and stay aligned with the existing shadcn-style patterns.
 
-- Components and page files use `PascalCase`.
-- Hooks use `useX` naming where possible.
-- Utility modules in `src/lib/` use concise lowercase filenames.
-- Keep route-specific UI in page components and move reusable logic into `hooks` or `lib`.
+Check `eslint.config.js` before introducing patterns that may affect linting.
 
-Tailwind utility classes are written inline in TSX. Follow the rules in `eslint.config.js`, and run `npm run lint` before finishing changes.
-
-## Testing Guidelines
-Vitest and Testing Library are configured via `vitest.config.ts` and `src/test/setup.ts`.
+## Testing Expectations
+Vitest and Testing Library are configured through `vitest.config.ts` and `src/test/setup.ts`.
 
 - Name tests `*.test.ts` or `*.test.tsx`.
-- Keep tests in `src/test/` or next to the feature they cover.
-- Add targeted tests for new logic in hooks, utilities, converters, and user-facing page behavior.
+- Keep tests in `src/test/` or colocated with the feature they cover.
+- Add focused tests for utilities, hooks, converters, and visible user behavior when practical.
+- Run `npm run lint` and the most relevant test command before wrapping up changes.
 
-No coverage gate is currently enforced, but new functionality should ship with focused tests where practical.
+## Change Scope
+- Prefer focused edits over broad refactors unless structural cleanup is required.
+- Reuse existing workspace patterns when adding or extending tools.
+- Do not change routing structure, shared UI primitives, or converter behavior without checking downstream usage.
 
-## Commit & Pull Request Guidelines
-Use short, imperative commit messages such as `Add SEO component` or `Test all tools`.
-
-- Avoid placeholder commits like `WIP` on shared branches.
-- Keep pull requests focused and clearly scoped.
-- Include a summary, linked issue when applicable, test results, and screenshots or recordings for UI changes.
-- Call out known limitations or follow-up work before requesting review.
+## Commits And PRs
+- Use short, imperative commit messages such as `Add SEO component` or `Test word to PDF flow`.
+- Avoid placeholder commits such as `WIP` on shared branches.
+- Keep pull requests scoped to one clear outcome.
+- Include a concise summary, linked issue if applicable, validation steps, and screenshots for UI changes.
+- Call out limitations, follow-up work, and tradeoffs before review.

@@ -14,6 +14,7 @@ const MIME_MAP: Record<string, string> = {
   ".avif": "image/avif",
   ".heic": "image/heic",
   ".heif": "image/heif",
+  ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 };
 
 function buildAcceptMap(accept: string): Record<string, string[]> {
