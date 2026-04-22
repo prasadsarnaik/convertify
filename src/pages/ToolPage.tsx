@@ -13,12 +13,14 @@ import ProtectPdfWorkspace from "@/components/ProtectPdfWorkspace";
 import UnlockPdfWorkspace from "@/components/UnlockPdfWorkspace";
 import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
+import PdfToWordTool from "@/components/PdfToWordTool";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "word-to-pdf": WordToPDFTool,
+  "pdf-to-word": PdfToWordTool,
   "edit-pdf": EditPdfWorkspace,
   "rotate-image": RotateImageWorkspace,
   "rotate-pdf": RotatePdfWorkspace,
