@@ -7,6 +7,7 @@ import EditPdfWorkspace from "@/components/EditPdfWorkspace";
 import RotateImageWorkspace from "@/components/RotateImageWorkspace";
 import RotatePdfWorkspace from "@/components/RotatePdfWorkspace";
 import CompressPdfWorkspace from "@/components/CompressPdfWorkspace";
+import MergePdfWorkspace from "@/components/MergePdfWorkspace";
 import ImageToPdfWorkspace from "@/components/ImageToPdfWorkspace";
 import ImageUpscalerWorkspace from "@/components/ImageUpscalerWorkspace";
 import ProtectPdfWorkspace from "@/components/ProtectPdfWorkspace";
@@ -21,6 +22,7 @@ const formatSlug = (slug: string) =>
 const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "word-to-pdf": WordToPDFTool,
   "pdf-to-word": PdfToWordTool,
+  "merge-pdf": MergePdfWorkspace,
   "edit-pdf": EditPdfWorkspace,
   "rotate-image": RotateImageWorkspace,
   "rotate-pdf": RotatePdfWorkspace,
