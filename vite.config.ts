@@ -12,7 +12,10 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -22,9 +25,20 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks: {
-          pdf: ["pdfjs-dist"],
-          heic: ["heic2any"],
+        // 2. Fix the "Invalid Type" error. 
+        // Ensure the function handles the default case correctly.
+        manualChunks(id: string) {
+          if (id.includes("pdfjs-dist")) return "pdf";
+          if (id.includes("heic2any")) return "heic";
+          
+          // 3. To fix the "Large Chunk" warning from earlier, 
+          // we should also split out core React vendor code.
+          if (id.includes("node_modules")) {
+            if (id.includes("react") || id.includes("react-dom")) {
+              return "vendor-core";
+            }
+            return "vendor"; 
+          }
         },
       },
     },
