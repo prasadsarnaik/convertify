@@ -1,9 +1,20 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FileText, X, Download, Loader2, CheckCircle, AlertCircle } from "lucide-react";
-
+import {
+  Upload,
+  FileText,
+  X,
+  Download,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Shield,
+  ListChecks,
+  HelpCircle,
+} from "lucide-react";
 import { getToolConfig, runConversion, type ConvertResult, type ToolOption } from "@/lib/converters";
+import { toolSeoMap } from "@/lib/site";
 
 const MIME_MAP: Record<string, string> = {
   ".pdf": "application/pdf",
@@ -21,14 +32,12 @@ function buildAcceptMap(accept: string): Record<string, string[]> {
   const map: Record<string, string[]> = {};
   for (const part of accept.split(",").map((s) => s.trim())) {
     if (part.includes("/")) {
-      // Already a MIME type like "image/*"
       map[part] = [];
     } else if (MIME_MAP[part]) {
       const mime = MIME_MAP[part];
       if (!map[mime]) map[mime] = [];
       map[mime].push(part);
     } else {
-      // Unknown extension — use wildcard
       map["application/octet-stream"] = [...(map["application/octet-stream"] || []), part];
     }
   }
@@ -43,7 +52,6 @@ function downloadBlob(blob: Blob, name: string) {
   a.style.display = "none";
   document.body.appendChild(a);
   a.click();
-  // Clean up after a short delay to ensure mobile browsers complete the download
   setTimeout(() => {
     URL.revokeObjectURL(url);
     document.body.removeChild(a);
@@ -57,8 +65,17 @@ interface FileItem {
 
 type Stage = "upload" | "processing" | "done" | "error";
 
-const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: string }) => {
+const ToolWorkspace = ({
+  toolName,
+  toolSlug,
+  loadingOnly = false,
+}: {
+  toolName: string;
+  toolSlug: string;
+  loadingOnly?: boolean;
+}) => {
   const config = getToolConfig(toolSlug);
+  const seoContent = toolSeoMap[toolSlug];
   const [files, setFiles] = useState<FileItem[]>([]);
   const [stage, setStage] = useState<Stage>("upload");
   const [results, setResults] = useState<ConvertResult[]>([]);
@@ -83,9 +100,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: config.accept
-      ? buildAcceptMap(config.accept)
-      : undefined,
+    accept: config.accept ? buildAcceptMap(config.accept) : undefined,
     multiple: config.multiple !== false,
   });
 
@@ -133,11 +148,21 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-2">{toolName}</h1>
-          <p className="text-muted-foreground text-center mb-10">Upload your files to get started.</p>
+          <p className="text-muted-foreground text-center mb-10">
+            {seoContent?.heroDescription || "Upload your files to get started."}
+          </p>
 
           <div className="rounded-2xl border border-border bg-background shadow-stage p-8">
             <AnimatePresence mode="wait">
-              {(stage === "upload" || stage === "error") && (
+              {loadingOnly || stage === "processing" ? (
+                <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
+                  <Loader2 className="w-10 h-10 text-accent-blue mx-auto mb-4 animate-spin" />
+                  <p className="font-semibold text-foreground">{loadingOnly ? "Loading tool..." : "Processing your files..."}</p>
+                  <p className="text-sm text-muted-foreground mt-1">This may take a moment.</p>
+                </motion.div>
+              ) : null}
+
+              {!loadingOnly && (stage === "upload" || stage === "error") ? (
                 <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <div
                     {...getRootProps()}
@@ -153,7 +178,7 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
                     </p>
                   </div>
 
-                  {stage === "error" && (
+                  {stage === "error" ? (
                     <div className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-start gap-3">
                       <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
                       <div>
@@ -161,9 +186,9 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
                         <p className="text-sm text-muted-foreground">{error}</p>
                       </div>
                     </div>
-                  )}
+                  ) : null}
 
-                  {files.length > 0 && (
+                  {files.length > 0 ? (
                     <div className="mt-6 space-y-3">
                       {files.map((f) => (
                         <div key={f.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
@@ -180,9 +205,9 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
                         </div>
                       ))}
 
-                      {config.options && config.options.length > 0 && (
+                      {config.options && config.options.length > 0 ? (
                         <ToolOptions options={config.options} values={options} onChange={updateOption} />
-                      )}
+                      ) : null}
 
                       <button
                         onClick={handleConvert}
@@ -191,19 +216,11 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
                         Convert {files.length} {files.length === 1 ? "file" : "files"}
                       </button>
                     </div>
-                  )}
+                  ) : null}
                 </motion.div>
-              )}
+              ) : null}
 
-              {stage === "processing" && (
-                <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
-                  <Loader2 className="w-10 h-10 text-accent-blue mx-auto mb-4 animate-spin" />
-                  <p className="font-semibold text-foreground">Processing your files…</p>
-                  <p className="text-sm text-muted-foreground mt-1">This may take a moment.</p>
-                </motion.div>
-              )}
-
-              {stage === "done" && (
+              {!loadingOnly && stage === "done" ? (
                 <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
                   <CheckCircle className="w-12 h-12 text-accent-green mx-auto mb-4" />
                   <p className="font-bold text-lg text-foreground">Done!</p>
@@ -234,16 +251,74 @@ const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: str
                     </button>
                   </div>
                 </motion.div>
-              )}
+              ) : null}
             </AnimatePresence>
           </div>
         </motion.div>
       </div>
+
+      {!loadingOnly && seoContent ? (
+        <div className="mt-16 border-t border-border bg-muted/30">
+          <div className="container max-w-4xl mx-auto px-6 py-16 space-y-16">
+            <section>
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">About {seoContent.name}</h2>
+              <p className="text-muted-foreground leading-relaxed">{seoContent.summary}</p>
+              <p className="text-muted-foreground leading-relaxed mt-4">
+                Convertify focuses on practical browser-based workflows, so this tool is intended for quick file tasks without a long setup process.
+              </p>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <ListChecks className="w-6 h-6 text-accent-blue" />
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">How to use {seoContent.name}</h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                {seoContent.howTo.map((step, index) => (
+                  <div key={step} className="rounded-2xl border border-border bg-background p-5">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Step {index + 1}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <Shield className="w-6 h-6 text-accent-green" />
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">Why use this tool</h2>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                {seoContent.benefits.map((benefit) => (
+                  <div key={benefit} className="rounded-2xl border border-border bg-background p-5">
+                    <p className="text-sm text-muted-foreground leading-relaxed">{benefit}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <div className="flex items-center gap-3 mb-6">
+                <HelpCircle className="w-6 h-6 text-accent-purple" />
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">Frequently asked questions</h2>
+              </div>
+              <div className="space-y-4">
+                {seoContent.faqs.map((faq) => (
+                  <div key={faq.question} className="rounded-2xl border border-border bg-background p-5">
+                    <h3 className="font-semibold text-foreground">{faq.question}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-2">{faq.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
-
-// ─── Tool Options UI ────────────────────────────────────────
 
 function ToolOptions({
   options,
@@ -260,7 +335,7 @@ function ToolOptions({
       {options.map((opt) => (
         <div key={opt.key} className="flex flex-col sm:flex-row sm:items-center gap-2">
           <label className="text-sm font-medium text-foreground min-w-[120px]">{opt.label}</label>
-          {opt.type === "select" && opt.choices && (
+          {opt.type === "select" && opt.choices ? (
             <select
               value={String(values[opt.key])}
               onChange={(e) => onChange(opt.key, e.target.value)}
@@ -272,8 +347,8 @@ function ToolOptions({
                 </option>
               ))}
             </select>
-          )}
-          {opt.type === "number" && (
+          ) : null}
+          {opt.type === "number" ? (
             <input
               type="number"
               value={Number(values[opt.key])}
@@ -282,8 +357,8 @@ function ToolOptions({
               max={opt.max}
               className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
-          )}
-          {opt.type === "text" && (
+          ) : null}
+          {opt.type === "text" ? (
             <input
               type="text"
               value={String(values[opt.key])}
@@ -291,7 +366,7 @@ function ToolOptions({
               placeholder={opt.placeholder}
               className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
-          )}
+          ) : null}
         </div>
       ))}
     </div>

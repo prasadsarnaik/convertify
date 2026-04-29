@@ -6,21 +6,25 @@ import Footer from "@/components/Footer";
 
 const steps = [
   { icon: Upload, title: "Upload Your File", desc: "Drag and drop or click to upload your files from any device.", color: "from-accent-blue to-accent-purple" },
-  { icon: Settings, title: "Choose a Tool", desc: "Select the conversion or optimization you need from our tool library.", color: "from-accent-purple to-accent-pink" },
-  { icon: Download, title: "Download the Result", desc: "Get your processed file instantly — fast and secure.", color: "from-accent-green to-accent-blue" },
+  { icon: Settings, title: "Choose a Tool", desc: "Select the conversion or optimization you need from the tool library.", color: "from-accent-purple to-accent-pink" },
+  { icon: Download, title: "Download the Result", desc: "Get your processed file instantly with a simple browser-based workflow.", color: "from-accent-green to-accent-blue" },
 ];
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const HowItWorksPage = () => (
   <>
-    <SEO title="How It Works" description="Learn how Convertify works in three simple steps — upload your file, choose a tool, and download the result instantly." path="/how-it-works" />
+    <SEO
+      title="How It Works"
+      description="See how Convertify works in three simple steps: upload a file, choose a tool, and download the result."
+      path="/how-it-works"
+    />
     <Navbar />
     <main className="pt-28 pb-20">
       <div className="container max-w-4xl mx-auto px-6">
         <motion.div variants={fade} initial="hidden" animate="visible" transition={{ duration: 0.5 }} className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">How It Works</h1>
-          <p className="text-lg text-muted-foreground">Three simple steps to get results.</p>
+          <p className="text-lg text-muted-foreground">Three simple steps for common PDF, image, and document tasks.</p>
         </motion.div>
 
         <div className="space-y-8">

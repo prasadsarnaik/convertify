@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { siteConfig } from "@/lib/site";
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
@@ -20,7 +21,11 @@ const ContactPage = () => {
 
   return (
     <>
-      <SEO title="Contact Us" description="Get in touch with the Convertify team. We'd love to hear your feedback, questions, or suggestions." path="/contact" />
+      <SEO
+        title="Contact"
+        description="Contact Convertify for support questions, feedback, or product suggestions."
+        path="/contact"
+      />
       <Navbar />
       <main className="pt-28 pb-20">
         <section className="container max-w-xl mx-auto px-6">
@@ -31,9 +36,9 @@ const ContactPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">Contact Us</h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">Contact</h1>
             <p className="text-lg text-muted-foreground">
-              Have a question, feedback or suggestion? We'd love to hear from you.
+              Have a question, feedback, or suggestion? Use the form below or email the support address.
             </p>
           </motion.div>
 
@@ -53,8 +58,8 @@ const ContactPage = () => {
                   className="text-center py-10"
                 >
                   <CheckCircle className="w-14 h-14 text-accent-green mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-foreground mb-2">Message Sent!</h3>
-                  <p className="text-muted-foreground">We'll get back to you soon.</p>
+                  <h3 className="text-xl font-bold text-foreground mb-2">Message Sent</h3>
+                  <p className="text-muted-foreground">We will get back to you soon.</p>
                   <Button
                     variant="outline"
                     className="mt-6 rounded-full"
@@ -81,7 +86,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Message</label>
-                    <Textarea placeholder="Your message…" required rows={5} className="rounded-xl" />
+                    <Textarea placeholder="Your message..." required rows={5} className="rounded-xl" />
                   </div>
                   <Button type="submit" className="w-full rounded-full gap-2">
                     <Send className="w-4 h-4" /> Send Message
@@ -103,7 +108,7 @@ const ContactPage = () => {
           >
             <div className="inline-flex items-center gap-2 text-muted-foreground">
               <Mail className="w-4 h-4" />
-              <span className="text-sm">support@convertify.app</span>
+              <span className="text-sm">{siteConfig.supportEmail}</span>
             </div>
           </motion.div>
         </section>

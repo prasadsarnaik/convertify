@@ -1,44 +1,58 @@
-# Repository Guidelines
+# AGENTS.md
 
-## Overview
+## Repository Overview
 - This repository is a Vite + React + TypeScript application for PDF, image, and document tooling.
-- Keep changes focused and intentional.
-- Preserve the existing routing structure, component boundaries, and Tailwind-based UI patterns unless the task clearly requires a structural change.
-- Extend established workflows instead of introducing parallel abstractions.
+- Keep changes deliberate, scoped, and consistent with the current architecture.
+- Extend existing workflows when possible instead of introducing parallel abstractions.
+
+## Core Guardrails
+- Preserve the current routing structure unless the task clearly requires a route-level change.
+- Respect existing component boundaries; do not pull page-specific concerns into shared modules too early.
+- Keep the established Tailwind and shadcn-style UI approach intact unless there is a strong reason to change it.
+- Prefer surgical edits over broad refactors.
 
 ## Project Structure
-- `src/pages/` contains route-level pages and page-specific composition.
-- `src/components/` contains reusable UI sections and tool workspace components.
-- `src/components/ui/` contains shared shadcn-style UI primitives.
-- `src/hooks/` contains reusable React hooks.
-- `src/lib/` contains shared utilities, helpers, and document conversion logic.
-- `src/test/` contains Vitest setup and targeted tests.
-- `src/assets/` contains bundled static assets.
-- `public/` contains runtime-served static files.
+- `src/pages/`: route-level pages and page-specific composition
+- `src/components/`: reusable UI sections and workspace components
+- `src/components/ui/`: shared shadcn-style UI primitives
+- `src/hooks/`: reusable React hooks
+- `src/lib/`: shared utilities, helpers, and document conversion logic
+- `src/test/`: Vitest setup and targeted tests
+- `src/assets/`: bundled static assets
+- `public/`: runtime-served static files
 - Use the `@/` alias for internal imports.
 
-## Development Commands
-Run all commands from the repository root.
+## Working Style
+- Keep route-specific presentation logic inside `src/pages/`.
+- Move reusable behavior into `components`, `hooks`, or `lib` when it is clearly shared.
+- Reuse existing workspace and tool patterns when adding functionality.
+- Avoid incidental cleanup unless it directly supports the requested change.
 
-- `npm install` installs dependencies.
-- `npm run dev` starts the Vite development server.
-- `npm run build` creates a production build in `dist/`.
-- `npm run build:dev` creates a development-mode build.
-- `npm run preview` serves the latest production build locally.
-- `npm run lint` runs ESLint.
-- `npm run test` runs Vitest once in `jsdom`.
-- `npm run test:watch` starts Vitest in watch mode.
-
-## Coding Conventions
+## Code Standards
 - Use TypeScript with 2-space indentation.
 - Keep imports explicit and grouped logically.
 - Use `PascalCase` for components and route page files.
-- Use `useX` naming for hooks where appropriate.
+- Use `useX` naming for hooks when appropriate.
 - Keep utility filenames in `src/lib/` short and lowercase.
-- Keep route-specific presentation inside `src/pages/`.
-- Move reusable logic into `components`, `hooks`, or `lib`.
-- Keep Tailwind classes inline in TSX and stay consistent with existing shadcn-style patterns.
-- Review `eslint.config.js` before introducing patterns that may conflict with repository lint rules.
+- Keep Tailwind classes inline in TSX and aligned with existing patterns.
+- Review `eslint.config.js` before introducing patterns that may conflict with repository rules.
+
+## Change Boundaries
+- Do not change routing structure, shared UI primitives, or converter behavior without checking downstream usage first.
+- Avoid broad architectural changes when a focused update is sufficient.
+- Treat converter logic and workspace flows as shared behavior; verify impact before modifying them.
+
+## Development Commands
+Run commands from the repository root.
+
+- `npm install`: install dependencies
+- `npm run dev`: start the Vite development server
+- `npm run build`: create a production build in `dist/`
+- `npm run build:dev`: create a development-mode build
+- `npm run preview`: serve the latest production build locally
+- `npm run lint`: run ESLint
+- `npm run test`: run Vitest once in `jsdom`
+- `npm run test:watch`: start Vitest in watch mode
 
 ## Testing Expectations
 - Name tests `*.test.ts` or `*.test.tsx`.
@@ -46,13 +60,7 @@ Run all commands from the repository root.
 - Add focused coverage for utilities, hooks, converters, and visible user behavior when practical.
 - Before finishing a change, run `npm run lint` and the most relevant test command.
 
-## Change Boundaries
-- Prefer small, surgical edits over broad refactors.
-- Reuse existing workspace and tool patterns when adding functionality.
-- Do not change routing structure, shared UI primitives, or converter behavior without checking downstream usage first.
-- Avoid incidental cleanup unless it directly supports the requested change.
-
-## Commits And PRs
+## Commit And PR Expectations
 - Use short, imperative commit messages such as `Add SEO component` or `Test word to PDF flow`.
 - Do not use placeholder commits such as `WIP`.
 - Keep each pull request scoped to one clear outcome.

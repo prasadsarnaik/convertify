@@ -16,19 +16,19 @@ const Hero = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full border border-border bg-card text-sm text-muted-foreground font-medium">
             <span className="status-dot" />
-            Free &amp; Fast — No sign-up required
+            Free and fast browser tools for PDFs, images, and documents
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.08] text-balance">
-            Convert Anything
+            PDF, Image &amp;
             <br />
             <span className="bg-gradient-to-r from-accent-blue to-accent-purple bg-clip-text text-transparent">
-              Instantly.
+              Document Tools
             </span>
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            The easiest way to convert, compress, and edit your files online. Fast, secure, and completely free.
+            Convert, merge, compress, sign, resize, and optimize files online with practical tools that work directly in your browser.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">

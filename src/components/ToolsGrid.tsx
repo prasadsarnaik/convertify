@@ -1,9 +1,22 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
-  Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
-  Lock, Unlock, Pen, FileText,
+  Layers,
+  Scissors,
+  Archive,
+  FileImage,
+  ImagePlus,
+  RotateCw,
+  Edit,
+  FileUp,
+  ArrowRightLeft,
+  Shrink,
+  Image,
+  ZoomIn,
+  Lock,
+  Unlock,
+  Pen,
+  FileText,
 } from "lucide-react";
 
 const tools = [
@@ -31,34 +44,33 @@ const tools = [
   { name: "Image Upscaler", desc: "Upscale images to HD/4K", icon: ZoomIn, color: "from-accent-purple to-accent-pink", slug: "image-upscaler" },
 ];
 
-const ToolsGrid = () => {
-  const navigate = useNavigate();
+const ToolsGrid = () => (
+  <section id="tools" className="py-20 md:py-28">
+    <div className="container max-w-6xl mx-auto px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-center mb-14"
+      >
+        <h2 className="text-3xl md:text-5xl font-bold text-foreground">Every tool you need</h2>
+        <p className="mt-4 text-muted-foreground text-lg">PDF, image, and document tools in one place.</p>
+      </motion.div>
 
-  return (
-    <section id="tools" className="py-20 md:py-28">
-      <div className="container max-w-6xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-14"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground">Every tool you need</h2>
-          <p className="mt-4 text-muted-foreground text-lg">PDF &amp; image tools, all in one place.</p>
-        </motion.div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {tools.map((tool, i) => (
-            <motion.button
-              key={tool.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.03 }}
-              whileHover={{ y: -4 }}
-              onClick={() => navigate(`/tool/${tool.slug}`)}
-              className="group flex flex-col items-start gap-3 p-5 rounded-2xl border border-border bg-background hover:shadow-card-hover transition-shadow text-left cursor-pointer"
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {tools.map((tool, i) => (
+          <motion.div
+            key={tool.slug}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: i * 0.03 }}
+            whileHover={{ y: -4 }}
+          >
+            <Link
+              to={`/tool/${tool.slug}`}
+              className="group flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-background p-5 text-left transition-shadow hover:shadow-card-hover"
             >
               <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0`}>
                 <tool.icon className="w-5 h-5 text-primary-foreground" />
@@ -67,12 +79,12 @@ const ToolsGrid = () => {
                 <p className="font-semibold text-sm text-foreground">{tool.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tool.desc}</p>
               </div>
-            </motion.button>
-          ))}
-        </div>
+            </Link>
+          </motion.div>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default ToolsGrid;

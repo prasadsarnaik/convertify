@@ -1,13 +1,27 @@
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-  Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
-  Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
-  Lock, Unlock, Pen, FileText,
+  Layers,
+  Scissors,
+  Archive,
+  FileImage,
+  ImagePlus,
+  RotateCw,
+  Edit,
+  FileUp,
+  ArrowRightLeft,
+  Shrink,
+  Image,
+  ZoomIn,
+  Lock,
+  Unlock,
+  Pen,
+  FileText,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { siteConfig } from "@/lib/site";
 
 const pdfTools = [
   { name: "Word to PDF", desc: "Convert DOC & DOCX to PDF", icon: FileText, color: "from-blue-500 to-indigo-600", slug: "word-to-pdf" },
@@ -39,61 +53,62 @@ const imageTools = [
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
-const ToolCard = ({ tool, i, navigate }: { tool: typeof pdfTools[0]; i: number; navigate: ReturnType<typeof useNavigate> }) => (
-  <motion.button
+const ToolCard = ({ tool, i }: { tool: typeof pdfTools[0]; i: number }) => (
+  <motion.div
     variants={fade}
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true }}
     transition={{ duration: 0.4, delay: i * 0.03 }}
     whileHover={{ y: -4 }}
-    onClick={() => navigate(`/tool/${tool.slug}`)}
-    className="group flex flex-col items-start gap-3 p-5 rounded-2xl border border-border bg-background hover:shadow-card-hover transition-shadow text-left cursor-pointer"
   >
-    <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0`}>
-      <tool.icon className="w-5 h-5 text-primary-foreground" />
-    </div>
-    <div>
-      <p className="font-semibold text-sm text-foreground">{tool.name}</p>
-      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tool.desc}</p>
-    </div>
-  </motion.button>
+    <Link
+      to={`/tool/${tool.slug}`}
+      className="group flex h-full flex-col items-start gap-3 rounded-2xl border border-border bg-background p-5 text-left transition-shadow hover:shadow-card-hover"
+    >
+      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0`}>
+        <tool.icon className="w-5 h-5 text-primary-foreground" />
+      </div>
+      <div>
+        <p className="font-semibold text-sm text-foreground">{tool.name}</p>
+        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{tool.desc}</p>
+      </div>
+    </Link>
+  </motion.div>
 );
 
-const ToolsPage = () => {
-  const navigate = useNavigate();
+const ToolsPage = () => (
+  <>
+    <SEO
+      title="All File Tools"
+      description="Browse Convertify tools for PDF merge, split, compress, signing, image conversion, resizing, and document workflows."
+      path="/tools"
+    />
+    <Navbar />
+    <main className="pt-28 pb-20">
+      <div className="container max-w-6xl mx-auto px-6">
+        <motion.div variants={fade} initial="hidden" animate="visible" transition={{ duration: 0.5 }} className="text-center mb-16">
+          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">All Tools</h1>
+          <p className="text-lg text-muted-foreground">{siteConfig.tagline}</p>
+        </motion.div>
 
-  return (
-    <>
-      <SEO title="All Tools" description="Browse all Convertify tools — PDF merge, split, compress, edit, protect, unlock, sign, rotate, and image conversion, compression, resize, upscale tools." path="/tools" />
-      <Navbar />
-      <main className="pt-28 pb-20">
-        <div className="container max-w-6xl mx-auto px-6">
-          <motion.div variants={fade} initial="hidden" animate="visible" transition={{ duration: 0.5 }} className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">All Tools</h1>
-            <p className="text-lg text-muted-foreground">PDF &amp; image tools, all in one place.</p>
-          </motion.div>
-
-          {/* PDF Tools */}
-          <h2 className="text-2xl font-bold text-foreground mb-6">PDF Tools</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-14">
-            {pdfTools.map((tool, i) => (
-              <ToolCard key={tool.slug} tool={tool} i={i} navigate={navigate} />
-            ))}
-          </div>
-
-          {/* Image Tools */}
-          <h2 className="text-2xl font-bold text-foreground mb-6">Image Tools</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {imageTools.map((tool, i) => (
-              <ToolCard key={tool.slug} tool={tool} i={i} navigate={navigate} />
-            ))}
-          </div>
+        <h2 className="text-2xl font-bold text-foreground mb-6">PDF Tools</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-14">
+          {pdfTools.map((tool, i) => (
+            <ToolCard key={tool.slug} tool={tool} i={i} />
+          ))}
         </div>
-      </main>
-      <Footer />
-    </>
-  );
-};
+
+        <h2 className="text-2xl font-bold text-foreground mb-6">Image Tools</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {imageTools.map((tool, i) => (
+            <ToolCard key={tool.slug} tool={tool} i={i} />
+          ))}
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </>
+);
 
 export default ToolsPage;
