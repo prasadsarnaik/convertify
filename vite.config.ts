@@ -45,25 +45,6 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: "assets/[name]-[hash].js",
         chunkFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
-        manualChunks(id: string) {
-          if (id.includes("pdfjs-dist")) return "pdf-viewer";
-          if (id.includes("pdf-lib")) return "pdf-lib";
-          if (id.includes("mammoth")) return "word-parser";
-          if (id.includes("heic2any")) return "heic-converter";
-          if (id.includes("fabric")) return "image-editor";
-          if (id.includes("gsap")) return "animation";
-          if (id.includes("framer-motion")) return "animation";
-          if (id.includes("recharts")) return "charts";
-          if (id.includes("node_modules")) {
-            if (id.includes("react-dom")) return "vendor-dom";
-            if (id.includes("react")) return "vendor-react";
-            if (id.includes("react-router") || id.includes("@tanstack")) return "vendor-router";
-            if (id.includes("@radix-ui") || id.includes("lucide")) return "vendor-ui";
-            if (id.includes("react-hook-form") || id.includes("zod")) return "vendor-forms";
-            if (id.includes("tailwind") || id.includes("clsx")) return "vendor-styles";
-            return "vendor";
-          }
-        },
       },
     },
   },
