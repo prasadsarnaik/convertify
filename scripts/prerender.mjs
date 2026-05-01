@@ -7,8 +7,27 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 const distDir = path.join(rootDir, "dist");
 const templatePath = path.join(distDir, "index.html");
-const serverEntryPath = path.join(distDir, "server", "entry-server.js");
 const siteModulePath = path.join(distDir, "assets", "site.js");
+
+async function resolveServerEntryPath() {
+  const staticPath = path.join(distDir, "server", "entry-server.js");
+  try {
+    await fs.access(staticPath);
+    return staticPath;
+  } catch {
+    // Continue with hashed SSR output lookup.
+  }
+
+  const serverAssetsDir = path.join(distDir, "server", "assets");
+  const files = await fs.readdir(serverAssetsDir);
+  const entryFile = files.find((file) => /^entry-server-.*\.js$/.test(file));
+
+  if (!entryFile) {
+    throw new Error("Could not locate SSR entry output in dist/server/assets");
+  }
+
+  return path.join(serverAssetsDir, entryFile);
+}
 
 // Try to import from built site.ts, fallback to hardcoded if not available
 let prerenderRoutes;
@@ -55,6 +74,7 @@ try {
 }
 
 const template = await fs.readFile(templatePath, "utf8");
+const serverEntryPath = await resolveServerEntryPath();
 const { render } = await import(pathToFileURL(serverEntryPath).href);
 
 for (const route of prerenderRoutes) {

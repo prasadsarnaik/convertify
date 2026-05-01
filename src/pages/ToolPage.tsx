@@ -16,6 +16,7 @@ import ProtectPdfWorkspace from "@/components/ProtectPdfWorkspace";
 import UnlockPdfWorkspace from "@/components/UnlockPdfWorkspace";
 import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import { getAbsoluteUrl, toolSeoMap } from "@/lib/site";
+import NotFound from "@/pages/NotFound";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -38,42 +39,46 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
 
 const ToolPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const toolSlug = slug || "";
+  const tool = toolSeoMap[toolSlug];
+
+  if (!tool) {
+    return <NotFound />;
+  }
+
   const Workspace = slug ? DEDICATED_WORKSPACES[slug] : undefined;
-  const tool = slug ? toolSeoMap[slug] : undefined;
-  const toolName = tool?.name || formatSlug(slug || "");
+  const toolName = tool.name || formatSlug(slug || "");
   const description =
-    tool?.metaDescription ||
+    tool.metaDescription ||
     `Use Convertify's ${toolName} tool online for practical browser-based file processing.`;
-  const structuredData = tool
-    ? [
-        {
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          applicationCategory: "BusinessApplication",
-          operatingSystem: "Any",
-          name: `${tool.name} - Convertify`,
-          description: tool.metaDescription,
-          url: getAbsoluteUrl(`/tool/${tool.slug}`),
-          offers: {
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "USD",
-          },
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Any",
+      name: `${tool.name} - Convertify`,
+      description: tool.metaDescription,
+      url: getAbsoluteUrl(`/tool/${tool.slug}`),
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: tool.faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
         },
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: tool.faqs.map((faq) => ({
-            "@type": "Question",
-            name: faq.question,
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: faq.answer,
-            },
-          })),
-        },
-      ]
-    : undefined;
+      })),
+    },
+  ];
 
   return (
     <>
