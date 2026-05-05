@@ -5,9 +5,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { siteConfig } from "@/lib/site";
 
-// ✅ IMPORT LOGO (IMPORTANT FIX)
-import logo from "@/assets/mainconvertifylogo.png";
-
 const navLinks = [
   { label: "Tools", href: "/tools" },
   { label: "Features", href: "/features" },
@@ -22,12 +19,11 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  // Scroll effect (premium)
+  // Scroll shadow effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -36,7 +32,6 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu on outside click
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: MouseEvent) => {
@@ -67,7 +62,7 @@ const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* 🔥 NAVBAR */}
+        {/* NAVBAR */}
         <div
           className={`flex items-center justify-between px-6 py-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${
             scrolled
@@ -75,17 +70,16 @@ const Navbar = () => {
               : "bg-background/70 border-transparent"
           }`}
         >
-          {/* 🔥 LOGO */}
+          {/* LOGO */}
           <Link to="/" className="flex items-center gap-3 group">
             <img
-              src={logo}
+              src="/logo.png"   // ✅ SAFE PATH
               alt="Convertify Logo"
-              loading="eager"
               className="w-10 h-10 object-contain transition-transform group-hover:scale-105"
             />
           </Link>
 
-          {/* 🔥 DESKTOP NAV */}
+          {/* DESKTOP NAV */}
           <div className="hidden lg:flex items-center gap-10 text-sm font-medium">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
@@ -96,8 +90,6 @@ const Navbar = () => {
                   className="relative text-muted-foreground hover:text-foreground transition"
                 >
                   {link.label}
-
-                  {/* Active underline */}
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] bg-foreground transition-all duration-300 ${
                       isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -108,10 +100,9 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* 🔥 RIGHT SIDE */}
+          {/* RIGHT SIDE */}
           <div className="hidden lg:flex items-center gap-4 ml-6">
             <ThemeToggle />
-
             <Link
               to="/tools"
               className="px-6 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-105 hover:shadow-md transition-all duration-200 whitespace-nowrap"
@@ -120,10 +111,9 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* 🔥 MOBILE */}
+          {/* MOBILE */}
           <div className="flex lg:hidden items-center gap-3">
             <ThemeToggle />
-
             <button
               onClick={toggleMenu}
               className="p-2 rounded-xl hover:bg-muted transition"
@@ -138,7 +128,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* 🔥 MOBILE MENU */}
+        {/* MOBILE MENU */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -180,7 +170,6 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
 export default Navbar;
 // import { motion, AnimatePresence } from "framer-motion";
 // import { FileText, Menu, X } from "lucide-react";
