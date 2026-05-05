@@ -16,6 +16,7 @@ import UnlockPdfWorkspace from "@/components/UnlockPdfWorkspace";
 import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
+import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
 
 const formatSlug = (slug: string) =>
