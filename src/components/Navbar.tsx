@@ -75,7 +75,7 @@ const Navbar = () => {
             <img
               src="/mainconvertifylogo.png"   // ✅ SAFE PATH
               alt="Convertify Logo"
-              className="w-30 h-20 object-contain transition-transform group-hover:scale-105"
+              className="w-25 h-15 object-contain transition-transform group-hover:scale-105"
             />
           </Link>
 
