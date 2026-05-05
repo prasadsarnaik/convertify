@@ -47,7 +47,7 @@ const ToolCard = ({ tool, i, navigate }: { tool: typeof pdfTools[0]; i: number; 
     viewport={{ once: true }}
     transition={{ duration: 0.4, delay: i * 0.03 }}
     whileHover={{ y: -4 }}
-    onClick={() => navigate(`/tool/${tool.slug}`)}
+    onClick={() => navigate(`/${tool.slug}`)}
     className="group flex flex-col items-start gap-3 p-5 rounded-2xl border border-border bg-background hover:shadow-card-hover transition-shadow text-left cursor-pointer"
   >
     <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tool.color} flex items-center justify-center shrink-0`}>

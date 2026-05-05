@@ -140,7 +140,7 @@ const ToolStatusPage = () => {
                       <p className="text-xs text-muted-foreground line-clamp-1">{tool.notes}</p>
                     </div>
                     <button
-                      onClick={() => navigate(`/tool/${tool.slug}`)}
+                      onClick={() => navigate(`/${tool.slug}`)}
                       className="shrink-0 p-2 rounded-xl border border-border text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
                     >
                       <ExternalLink className="w-4 h-4" />

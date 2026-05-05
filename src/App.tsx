@@ -36,6 +36,8 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/tool/:slug" element={<ToolPage />} />
+          {/* SEO-friendly aliases — short URLs for each tool */}
+          <Route path="/:slug" element={<ToolPage />} />
           <Route path="/tool-status" element={<ToolStatusPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />

@@ -4,11 +4,11 @@ const columns = [
   {
     title: "Tools",
     links: [
-      { label: "Merge PDF", href: "/tool/merge-pdf" },
-      { label: "Split PDF", href: "/tool/split-pdf" },
-      { label: "Compress PDF", href: "/tool/compress-pdf" },
-      { label: "PDF to JPG", href: "/tool/pdf-to-jpg" },
-      { label: "JPG to PDF", href: "/tool/jpg-to-pdf" },
+      { label: "Merge PDF", href: "/merge-pdf" },
+      { label: "Split PDF", href: "/split-pdf" },
+      { label: "Compress PDF", href: "/compress-pdf" },
+      { label: "PDF to JPG", href: "/pdf-to-jpg" },
+      { label: "JPG to PDF", href: "/jpg-to-pdf" },
     ],
   },
   {

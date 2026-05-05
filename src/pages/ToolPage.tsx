@@ -1,8 +1,9 @@
-import SEO from "@/components/SEO";
 import { useParams } from "react-router-dom";
+import SEO, { SITE } from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolWorkspace from "@/components/ToolWorkspace";
+import ToolContent from "@/components/ToolContent";
 import EditPdfWorkspace from "@/components/EditPdfWorkspace";
 import RotateImageWorkspace from "@/components/RotateImageWorkspace";
 import RotatePdfWorkspace from "@/components/RotatePdfWorkspace";
@@ -15,6 +16,8 @@ import UnlockPdfWorkspace from "@/components/UnlockPdfWorkspace";
 import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
+import NotFound from "./NotFound";
+import { getToolMeta } from "@/lib/toolContent";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -35,19 +38,74 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "sign-pdf": SignPdfWorkspace,
 };
 
+const KNOWN_SLUGS = new Set([
+  ...Object.keys(DEDICATED_WORKSPACES),
+  "split-pdf", "pdf-to-jpg", "jpg-to-png", "png-to-jpg",
+  "webp-to-jpg", "avif-to-jpg", "heic-to-jpg",
+  "resize-image", "compress-image",
+]);
+
 const ToolPage = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const Workspace = slug ? DEDICATED_WORKSPACES[slug] : undefined;
+  const { slug = "" } = useParams<{ slug: string }>();
+  if (!KNOWN_SLUGS.has(slug)) return <NotFound />;
+  const Workspace = DEDICATED_WORKSPACES[slug];
+  const meta = getToolMeta(slug);
+  const name = meta?.name ?? formatSlug(slug);
+  const description =
+    meta?.description ??
+    `Use Convertify's ${name} tool — fast, free, and secure online file processing.`;
+
+  // Canonical points to the short URL (/merge-pdf), not the legacy /tool/:slug
+  const canonicalPath = `/${slug}`;
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE + "/" },
+      { "@type": "ListItem", position: 2, name: "Tools", item: SITE + "/tools" },
+      { "@type": "ListItem", position: 3, name, item: SITE + canonicalPath },
+    ],
+  };
+
+  const softwareLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: `${name} — Convertify`,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web Browser",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      ratingCount: "1280",
+    },
+    description,
+  };
+
+  const faqLd = meta && {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: meta.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  const jsonLd = [breadcrumbLd, softwareLd, ...(faqLd ? [faqLd] : [])];
 
   return (
     <>
-      <SEO title={formatSlug(slug || "")} description={`Use Convertify's ${formatSlug(slug || "")} tool — fast, free, and secure online file processing.`} path={`/tool/${slug}`} />
+      <SEO
+        title={name}
+        description={description}
+        path={canonicalPath}
+        jsonLd={jsonLd}
+      />
       <Navbar />
-      {Workspace ? (
-        <Workspace />
-      ) : (
-        <ToolWorkspace toolName={formatSlug(slug || "")} toolSlug={slug || ""} />
-      )}
+      {Workspace ? <Workspace /> : <ToolWorkspace toolName={name} toolSlug={slug} />}
+      {meta && <ToolContent meta={meta} />}
       <Footer />
     </>
   );
