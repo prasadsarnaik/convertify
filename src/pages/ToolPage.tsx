@@ -37,8 +37,16 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "sign-pdf": SignPdfWorkspace,
 };
 
+const KNOWN_SLUGS = new Set([
+  ...Object.keys(DEDICATED_WORKSPACES),
+  "split-pdf", "pdf-to-jpg", "jpg-to-png", "png-to-jpg",
+  "webp-to-jpg", "avif-to-jpg", "heic-to-jpg",
+  "resize-image", "compress-image",
+]);
+
 const ToolPage = () => {
   const { slug = "" } = useParams<{ slug: string }>();
+  if (!KNOWN_SLUGS.has(slug)) return <NotFound />;
   const Workspace = DEDICATED_WORKSPACES[slug];
   const meta = getToolMeta(slug);
   const name = meta?.name ?? formatSlug(slug);
