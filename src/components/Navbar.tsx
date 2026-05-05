@@ -5,6 +5,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import ThemeToggle from "./ThemeToggle";
 import { siteConfig } from "@/lib/site";
 
+// ✅ IMPORT LOGO (IMPORTANT FIX)
+import logo from "@/assets/mainconvertifylogo.png";
+
 const navLinks = [
   { label: "Tools", href: "/tools" },
   { label: "Features", href: "/features" },
@@ -19,11 +22,12 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
+  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  // 🔥 Scroll shadow effect
+  // Scroll effect (premium)
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -32,6 +36,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close menu on outside click
   useEffect(() => {
     if (!menuOpen) return;
     const handler = (e: MouseEvent) => {
@@ -62,31 +67,22 @@ const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* 🔥 NAV CONTAINER */}
+        {/* 🔥 NAVBAR */}
         <div
-          className={`flex items-center justify-between px-6 py-3 rounded-2xl border backdrop-blur-xl transition-all duration-300
-          ${
+          className={`flex items-center justify-between px-6 py-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${
             scrolled
               ? "bg-background/95 shadow-lg border-border"
               : "bg-background/70 border-transparent"
           }`}
         >
-
           {/* 🔥 LOGO */}
           <Link to="/" className="flex items-center gap-3 group">
             <img
-              src="/src/assets/mainconvertifylogo.png"
+              src={logo}
               alt="Convertify Logo"
+              loading="eager"
               className="w-10 h-10 object-contain transition-transform group-hover:scale-105"
             />
-            {/* <div className="leading-tight"> */}
-              {/* <h1 className="text-sm font-semibold text-foreground"> */}
-              {/* /* {siteConfig.name} */ */}
-              {/* </h1> */}
-              {/* <p className="text-[10px] uppercase tracking-wider text-muted-foreground"> */}
-                {/* PDF & Image Tools */}
-              {/* </p> */}
-            {/* </div> */}
           </Link>
 
           {/* 🔥 DESKTOP NAV */}
@@ -101,7 +97,7 @@ const Navbar = () => {
                 >
                   {link.label}
 
-                  {/* 🔥 ACTIVE UNDERLINE */}
+                  {/* Active underline */}
                   <span
                     className={`absolute left-0 -bottom-1 h-[2px] bg-foreground transition-all duration-300 ${
                       isActive ? "w-full" : "w-0 group-hover:w-full"
@@ -116,7 +112,6 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-4 ml-6">
             <ThemeToggle />
 
-            {/* 🔥 PREMIUM CTA */}
             <Link
               to="/tools"
               className="px-6 py-2 rounded-full bg-foreground text-background text-sm font-semibold hover:scale-105 hover:shadow-md transition-all duration-200 whitespace-nowrap"
@@ -185,6 +180,7 @@ const Navbar = () => {
   );
 };
 
+export default Navbar;
 export default Navbar;
 // import { motion, AnimatePresence } from "framer-motion";
 // import { FileText, Menu, X } from "lucide-react";
