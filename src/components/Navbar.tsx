@@ -75,18 +75,18 @@ const Navbar = () => {
           {/* 🔥 LOGO */}
           <Link to="/" className="flex items-center gap-3 group">
             <img
-              src="/logo.png"
+              src="/src/assets/mainconvertifylogo.png"
               alt="Convertify Logo"
               className="w-10 h-10 object-contain transition-transform group-hover:scale-105"
             />
-            <div className="leading-tight">
-              <h1 className="text-sm font-semibold text-foreground">
-                {siteConfig.name}
-              </h1>
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                PDF & Image Tools
-              </p>
-            </div>
+            {/* <div className="leading-tight"> */}
+              {/* <h1 className="text-sm font-semibold text-foreground"> */}
+              {/* /* {siteConfig.name} */ */}
+              {/* </h1> */}
+              {/* <p className="text-[10px] uppercase tracking-wider text-muted-foreground"> */}
+                {/* PDF & Image Tools */}
+              {/* </p> */}
+            {/* </div> */}
           </Link>
 
           {/* 🔥 DESKTOP NAV */}
