@@ -92,6 +92,9 @@ for (const route of prerenderRoutes) {
     .replace("<!--app-scripts-->", helmet?.script?.toString() || "");
 
   await fs.writeFile(outputPath, html, "utf8");
+  if (route === "/") {
+    await fs.writeFile(path.join(distDir, "404.html"), html, "utf8");
+  }
 }
 
 const serverDir = path.join(distDir, "server");

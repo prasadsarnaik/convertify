@@ -55,7 +55,7 @@ const Navbar = () => {
   return (
     <header
       ref={navRef}
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl"
+      className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-6xl"
     >
       <motion.nav
         initial={{ y: -30, opacity: 0 }}
@@ -64,11 +64,10 @@ const Navbar = () => {
       >
         {/* NAVBAR */}
         <div
-          className={`flex items-center justify-between px-6 py-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${
-            scrolled
+          className={`flex items-center justify-between px-6 py-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 ${scrolled
               ? "bg-background/95 shadow-lg border-border"
               : "bg-background/70 border-transparent"
-          }`}
+            }`}
         >
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-3 group">
@@ -91,9 +90,8 @@ const Navbar = () => {
                 >
                   {link.label}
                   <span
-                    className={`absolute left-0 -bottom-1 h-[2px] bg-foreground transition-all duration-300 ${
-                      isActive ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
+                    className={`absolute left-0 -bottom-1 h-[2px] bg-foreground transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
                   />
                 </Link>
               );
@@ -144,11 +142,10 @@ const Navbar = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className={`px-4 py-3 rounded-xl text-base font-medium transition ${
-                      location.pathname === link.href
+                    className={`px-4 py-3 rounded-xl text-base font-medium transition ${location.pathname === link.href
                         ? "bg-muted text-foreground"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     {link.label}
                   </Link>
