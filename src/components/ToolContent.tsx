@@ -1,22 +1,27 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, ShieldCheck, Zap, Lock } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Zap, Lock, Sparkles } from "lucide-react";
 import type { ToolMeta } from "@/lib/toolContent";
 import { getToolMeta } from "@/lib/toolContent";
+import { getToolLongForm } from "@/lib/toolContentLong";
 import AdSlot from "./AdSlot";
 
 const fade = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
 
 const ToolContent = ({ meta }: { meta: ToolMeta }) => {
+  const long = getToolLongForm(meta);
   const related = meta.related
     .map((slug) => getToolMeta(slug))
     .filter((t): t is ToolMeta => Boolean(t));
+  const allFaqs = [...meta.faqs, ...long.extraFaqs];
 
   return (
     <section className="container max-w-3xl mx-auto px-6 py-16">
       <motion.div variants={fade} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={{ duration: 0.5 }}>
         <h2 className="text-3xl font-bold text-foreground mb-4">What is {meta.name}?</h2>
-        <p className="text-muted-foreground leading-relaxed mb-10">{meta.intro}</p>
+        <p className="text-muted-foreground leading-relaxed mb-5">{meta.intro}</p>
+        <p className="text-muted-foreground leading-relaxed mb-5">{long.body[0]}</p>
+        <p className="text-muted-foreground leading-relaxed mb-10">{long.body[1]}</p>
 
         <h2 className="text-2xl font-bold text-foreground mb-4">How to use {meta.name}</h2>
         <ol className="space-y-3 mb-10">
@@ -30,7 +35,25 @@ const ToolContent = ({ meta }: { meta: ToolMeta }) => {
           ))}
         </ol>
 
-        <AdSlot label="Sponsored" />
+        <h2 className="text-2xl font-bold text-foreground mb-4">Key features</h2>
+        <ul className="grid sm:grid-cols-2 gap-3 mb-10">
+          {long.features.map((f) => (
+            <li key={f} className="flex gap-2.5 text-muted-foreground text-sm">
+              <Sparkles className="w-4 h-4 text-accent-blue shrink-0 mt-1" />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <h2 className="text-2xl font-bold text-foreground mb-4">Who uses {meta.name}?</h2>
+        <ul className="space-y-2.5 mb-10">
+          {long.useCases.map((u) => (
+            <li key={u} className="flex gap-2.5 text-muted-foreground">
+              <CheckCircle2 className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
+              <span>{u}</span>
+            </li>
+          ))}
+        </ul>
 
         <h2 className="text-2xl font-bold text-foreground mb-4">Why use Convertify for {meta.name}</h2>
         <ul className="space-y-2.5 mb-10">
@@ -38,6 +61,21 @@ const ToolContent = ({ meta }: { meta: ToolMeta }) => {
             <li key={i} className="flex gap-2.5 text-muted-foreground">
               <CheckCircle2 className="w-5 h-5 text-accent-green shrink-0 mt-0.5" />
               <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+
+        <AdSlot label="Sponsored" />
+
+        <h2 className="text-2xl font-bold text-foreground mb-4">Privacy &amp; security</h2>
+        <p className="text-muted-foreground leading-relaxed mb-4">
+          Privacy is the default with {meta.name}. Because the work happens inside your browser, no copy of your file is ever transmitted to Convertify or to a third party.
+        </p>
+        <ul className="space-y-2.5 mb-10">
+          {long.privacy.map((p) => (
+            <li key={p} className="flex gap-2.5 text-muted-foreground">
+              <ShieldCheck className="w-5 h-5 text-accent-blue shrink-0 mt-0.5" />
+              <span>{p}</span>
             </li>
           ))}
         </ul>
@@ -58,7 +96,7 @@ const ToolContent = ({ meta }: { meta: ToolMeta }) => {
 
         <h2 className="text-2xl font-bold text-foreground mb-4">Frequently asked questions</h2>
         <div className="space-y-4 mb-12">
-          {meta.faqs.map((f) => (
+          {allFaqs.map((f) => (
             <details key={f.q} className="group p-5 rounded-2xl border border-border bg-card">
               <summary className="cursor-pointer font-semibold text-foreground list-none flex justify-between items-center">
                 {f.q}
