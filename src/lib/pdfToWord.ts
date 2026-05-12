@@ -1,171 +1,159 @@
 // src/lib/pdfToWord.ts
-// CloudConvert API integration for PDF to Word conversion
+// 100% client-side PDF -> Word (DOCX) using pdfjs-dist + docx.
 
-const API_KEY = import.meta.env.VITE_CLOUDCONVERT_API_KEY || "";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  PageBreak,
+  HeadingLevel,
+  AlignmentType,
+} from "docx";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export interface ConversionResult {
   blob: Blob;
   filename: string;
 }
 
-export interface CloudConvertError {
-  message: string;
-  code?: string;
-}
-
-/**
- * Validates PDF file
- * Max size: 25MB
- */
 export function validatePdfFile(file: File): { valid: boolean; error?: string } {
-  const maxSize = 25 * 1024 * 1024; // 25MB
-
-  const lowerName = file.name.toLowerCase();
-  if (!lowerName.endsWith(".pdf")) {
+  const maxSize = 25 * 1024 * 1024;
+  if (!file.name.toLowerCase().endsWith(".pdf")) {
     return { valid: false, error: "Only PDF files are supported" };
   }
-
   if (file.size > maxSize) {
     return { valid: false, error: "File size exceeds 25MB limit" };
   }
-
   return { valid: true };
 }
 
-/**
- * Formats file size for display
- */
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+interface LineItem {
+  text: string;
+  y: number;
+  height: number;
+}
+
 /**
- * Converts PDF to Word (DOCX) using CloudConvert API
+ * Group PDF text items into lines using their Y position, then sort
+ * top-to-bottom and join into paragraphs.
  */
+function buildLinesFromTextContent(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  items: any[],
+): LineItem[] {
+  const lines: LineItem[] = [];
+  const tolerance = 2;
+
+  for (const item of items) {
+    if (!item.str) continue;
+    const transform = item.transform as number[];
+    const y = transform[5];
+    const height = item.height || 12;
+
+    const existing = lines.find((l) => Math.abs(l.y - y) <= tolerance);
+    if (existing) {
+      existing.text += (existing.text.endsWith(" ") ? "" : " ") + item.str;
+    } else {
+      lines.push({ text: item.str, y, height });
+    }
+  }
+
+  // PDF Y origin is bottom-left, so descending Y = top to bottom.
+  lines.sort((a, b) => b.y - a.y);
+  return lines.map((l) => ({ ...l, text: l.text.trim() }));
+}
+
 export async function convertPdfToWord(file: File): Promise<ConversionResult> {
-  if (!API_KEY) {
-    throw new Error("CloudConvert API key not configured. Please add VITE_CLOUDCONVERT_API_KEY to your environment.");
-  }
-
   const validation = validatePdfFile(file);
-  if (!validation.valid) {
-    throw new Error(validation.error);
-  }
+  if (!validation.valid) throw new Error(validation.error);
 
-  try {
-    // Step 1: Create job
-    const jobResponse = await fetch("https://api.cloudconvert.com/v2/jobs", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        tasks: {
-          "import-file": {
-            operation: "import/upload",
-          },
-          "convert-file": {
-            operation: "convert",
-            input: "import-file",
-            input_format: "pdf",
-            output_format: "docx",
-          },
-          "export-file": {
-            operation: "export/url",
-            input: "convert-file",
-          },
-        },
-      }),
-    });
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
 
-    if (!jobResponse.ok) {
-      const error = await jobResponse.json();
-      throw new Error(error.message || "Failed to create conversion job");
-    }
+  const children: Paragraph[] = [];
 
-    const jobData = await jobResponse.json();
-    const { data } = jobData;
-    const uploadTask = data.tasks.find((t: any) => t.name === "import-file");
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum);
+    const textContent = await page.getTextContent();
+    const lines = buildLinesFromTextContent(textContent.items);
 
-    if (!uploadTask?.result?.form) {
-      throw new Error("Invalid upload task response");
-    }
+    if (lines.length === 0) {
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `[Page ${pageNum} contains no extractable text]`,
+              italics: true,
+              color: "888888",
+            }),
+          ],
+        }),
+      );
+    } else {
+      // Detect a likely title on the first page (first non-empty line, larger font).
+      const avgHeight =
+        lines.reduce((s, l) => s + l.height, 0) / Math.max(lines.length, 1);
 
-    // Step 2: Upload file
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(uploadTask.result.form.parameters)) {
-      formData.append(key, value as string);
-    }
-    formData.append("file", file);
+      lines.forEach((line, idx) => {
+        if (!line.text) return;
+        const isHeading =
+          pageNum === 1 && idx === 0 && line.height > avgHeight * 1.25;
 
-    const uploadResponse = await fetch(uploadTask.result.form.url, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!uploadResponse.ok) {
-      throw new Error("Failed to upload file to CloudConvert");
-    }
-
-    // Step 3: Poll for completion
-    const jobId = data.id;
-    let attempts = 0;
-    const maxAttempts = 60; // 2 minutes (2s intervals)
-
-    while (attempts < maxAttempts) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const statusResponse = await fetch(`https://api.cloudconvert.com/v2/jobs/${jobId}`, {
-        headers: {
-          "Authorization": `Bearer ${API_KEY}`,
-        },
+        children.push(
+          new Paragraph({
+            heading: isHeading ? HeadingLevel.HEADING_1 : undefined,
+            alignment: AlignmentType.LEFT,
+            spacing: { after: 120 },
+            children: [
+              new TextRun({
+                text: line.text,
+                bold: isHeading,
+                size: isHeading ? 32 : 22,
+              }),
+            ],
+          }),
+        );
       });
-
-      if (!statusResponse.ok) {
-        throw new Error("Failed to check job status");
-      }
-
-      const statusData = await statusResponse.json();
-      const { data: job } = statusData;
-      const status = job.status;
-
-      if (status === "finished") {
-        const exportTask = job.tasks.find((t: any) => t.name === "export-file");
-        if (!exportTask?.result?.files?.[0]?.url) {
-          throw new Error("Conversion completed but no file URL found");
-        }
-
-        // Step 4: Download converted file
-        const fileUrl = exportTask.result.files[0].url;
-        const downloadResponse = await fetch(fileUrl);
-
-        if (!downloadResponse.ok) {
-          throw new Error("Failed to download converted file");
-        }
-
-        const blob = await downloadResponse.blob();
-        const baseName = file.name.replace(/\.pdf$/i, "");
-
-        return {
-          blob,
-          filename: `${baseName}.docx`,
-        };
-      }
-
-      if (status === "error") {
-        const errorTask = job.tasks.find((t: any) => t.status === "error");
-        throw new Error(errorTask?.result?.message || "Conversion failed");
-      }
-
-      attempts++;
     }
 
-    throw new Error("Conversion timed out. Please try again.");
-  } catch (error: any) {
-    console.error("CloudConvert conversion error:", error);
-    throw new Error(error.message || "Conversion failed. Please try again.");
+    if (pageNum < pdf.numPages) {
+      children.push(new Paragraph({ children: [new PageBreak()] }));
+    }
   }
+
+  const doc = new Document({
+    creator: "Convertify",
+    title: file.name.replace(/\.pdf$/i, ""),
+    styles: {
+      default: {
+        document: { run: { font: "Calibri", size: 22 } },
+      },
+    },
+    sections: [
+      {
+        properties: {
+          page: {
+            size: { width: 12240, height: 15840 },
+            margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
+          },
+        },
+        children,
+      },
+    ],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const baseName = file.name.replace(/\.pdf$/i, "");
+  return { blob, filename: `${baseName}.docx` };
 }
