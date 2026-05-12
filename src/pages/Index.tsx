@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import ToolsGrid from "@/components/ToolsGrid";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
+import HomeContent, { homeFaqLd } from "@/components/HomeContent";
 import Footer from "@/components/Footer";
 
 const orgLd = {
@@ -31,15 +32,18 @@ const Index = () => (
   <>
     <SEO
       title="Convert Anything Instantly"
-      description="The easiest way to convert, compress, and edit your files online. Free, secure PDF and image tools that work right in your browser."
+      description="Free online PDF and image tools — merge, split, compress, convert, sign and protect documents securely in your browser. No sign-up, no watermark."
       path="/"
-      jsonLd={[orgLd, websiteLd]}
+      jsonLd={[orgLd, websiteLd, homeFaqLd]}
     />
     <Navbar />
-    <Hero />
-    <ToolsGrid />
-    <Features />
-    <HowItWorks />
+    <main>
+      <Hero />
+      <ToolsGrid />
+      <Features />
+      <HowItWorks />
+      <HomeContent />
+    </main>
     <Footer />
   </>
 );
