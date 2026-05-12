@@ -18,6 +18,7 @@ import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
 import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
+import { getToolLongForm } from "@/lib/toolContentLong";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -86,7 +87,7 @@ const ToolPage = () => {
   const faqLd = meta && {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: meta.faqs.map((f) => ({
+    mainEntity: [...meta.faqs, ...getToolLongForm(meta).extraFaqs].map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },

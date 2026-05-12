@@ -14,6 +14,10 @@ import ContactPage from "./pages/ContactPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Disclaimer from "./pages/Disclaimer";
+import DmcaPage from "./pages/DmcaPage";
+import CookiePolicyPage from "./pages/CookiePolicyPage";
+import BlogIndexPage from "./pages/BlogIndexPage";
+import BlogPostPage from "./pages/BlogPostPage";
 import ToolStatusPage from "./pages/ToolStatusPage";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
@@ -35,13 +39,17 @@ const App = () => (
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/blog" element={<BlogIndexPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/tool/:slug" element={<ToolPage />} />
           {/* SEO-friendly aliases — short URLs for each tool */}
-          <Route path="/:slug" element={<ToolPage />} />
           <Route path="/tool-status" element={<ToolStatusPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsConditions />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/dmca" element={<DmcaPage />} />
+          <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+          <Route path="/:slug" element={<ToolPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
