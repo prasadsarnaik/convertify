@@ -87,7 +87,7 @@ const ToolPage = () => {
   const faqLd = meta && {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: meta.faqs.map((f) => ({
+    mainEntity: [...meta.faqs, ...getToolLongForm(meta).extraFaqs].map((f) => ({
       "@type": "Question",
       name: f.q,
       acceptedAnswer: { "@type": "Answer", text: f.a },
