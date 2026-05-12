@@ -1,17 +1,17 @@
 # AGENTS.md
 
-## Repository Overview
+## Purpose
 - This repository is a Vite + React + TypeScript application for PDF, image, and document tooling.
-- Keep changes deliberate, scoped, and consistent with the current architecture.
-- Extend existing workflows when possible instead of introducing parallel abstractions.
+- Make deliberate, scoped changes that fit the existing architecture.
+- Extend current flows before introducing new abstractions.
 
-## Core Guardrails
+## Operating Rules
 - Preserve the current routing structure unless the task clearly requires a route-level change.
-- Respect existing component boundaries; do not pull page-specific concerns into shared modules too early.
-- Keep the established Tailwind and shadcn-style UI approach intact unless there is a strong reason to change it.
+- Respect existing component boundaries; do not move page-specific concerns into shared modules too early.
+- Keep the current Tailwind and shadcn-style UI approach unless there is a strong reason to change it.
 - Prefer surgical edits over broad refactors.
 
-## Project Structure
+## Project Layout
 - `src/pages/`: route-level pages and page-specific composition
 - `src/components/`: reusable UI sections and workspace components
 - `src/components/ui/`: shared shadcn-style UI primitives
@@ -22,9 +22,9 @@
 - `public/`: runtime-served static files
 - Use the `@/` alias for internal imports.
 
-## Working Style
+## Implementation Guidance
 - Keep route-specific presentation logic inside `src/pages/`.
-- Move reusable behavior into `components`, `hooks`, or `lib` when it is clearly shared.
+- Move behavior into `components`, `hooks`, or `lib` only when it is clearly reusable.
 - Reuse existing workspace and tool patterns when adding functionality.
 - Avoid incidental cleanup unless it directly supports the requested change.
 
@@ -39,11 +39,11 @@
 
 ## Change Boundaries
 - Do not change routing structure, shared UI primitives, or converter behavior without checking downstream usage first.
-- Avoid broad architectural changes when a focused update is sufficient.
+- Avoid architectural changes when a focused update is sufficient.
 - Treat converter logic and workspace flows as shared behavior; verify impact before modifying them.
 
-## Development Commands
-Run commands from the repository root.
+## Commands
+Run all commands from the repository root.
 
 - `npm install`: install dependencies
 - `npm run dev`: start the Vite development server
@@ -54,7 +54,7 @@ Run commands from the repository root.
 - `npm run test`: run Vitest once in `jsdom`
 - `npm run test:watch`: start Vitest in watch mode
 
-## Testing Expectations
+## Testing
 - Name tests `*.test.ts` or `*.test.tsx`.
 - Place tests in `src/test/` or alongside the feature they cover.
 - Add focused coverage for utilities, hooks, converters, and visible user behavior when practical.
