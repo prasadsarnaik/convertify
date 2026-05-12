@@ -71,3 +71,50 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## SEO Verification Checklist
+
+Use this checklist before and after launching Convertify to confirm the site is discoverable, indexable, and AdSense-ready.
+
+### 1. Ownership & Verification
+- [ ] Replace `REPLACE_WITH_YOUR_CODE` in `index.html` (`<meta name="google-site-verification">`) with the code from Google Search Console.
+- [ ] Verify the property in [Google Search Console](https://search.google.com/search-console) (HTML tag method).
+- [ ] Add and verify the property in [Bing Webmaster Tools](https://www.bing.com/webmasters) (optional but recommended).
+- [ ] Confirm the canonical domain (`https://convertify.app`) matches the deployed domain — update `SITE` in `src/components/SEO.tsx` and URLs in `public/sitemap.xml` if it changes.
+- [ ] Ensure HTTPS is active and `http://` redirects to `https://`.
+
+### 2. Indexing & Crawlability
+- [ ] Submit `https://convertify.app/sitemap.xml` under **Search Console → Sitemaps**.
+- [ ] Confirm `public/robots.txt` allows crawling (`Allow: /`) and references the sitemap.
+- [ ] Use Search Console **URL Inspection** on the homepage and 2–3 tool pages → click **Request Indexing**.
+- [ ] After 3–7 days, check **Coverage / Pages** report for indexed vs. excluded URLs.
+- [ ] Verify no important pages carry `noindex` (check `<SEO noindex>` usage).
+- [ ] Confirm canonical tags resolve to the short URLs (e.g. `/merge-pdf`, not `/tool/merge-pdf`).
+
+### 3. Structured Data Validation
+- [ ] Test the homepage with [Rich Results Test](https://search.google.com/test/rich-results) — expect `Organization` and `WebSite` schemas.
+- [ ] Test a tool page (e.g. `/merge-pdf`) — expect `BreadcrumbList`, `SoftwareApplication`, and `FAQPage`.
+- [ ] Validate with the [Schema.org Validator](https://validator.schema.org/) for any warnings.
+- [ ] Monitor **Search Console → Enhancements** for FAQ, Breadcrumb, and Sitelinks searchbox reports.
+- [ ] Confirm Open Graph and Twitter cards render via [opengraph.xyz](https://www.opengraph.xyz/) (uses `/og-image.png`).
+
+### 4. Performance & Core Web Vitals
+- [ ] Run [PageSpeed Insights](https://pagespeed.web.dev/) on homepage and one tool page — target LCP < 2.5s, CLS < 0.1, INP < 200ms.
+- [ ] Confirm `AdSlot` placeholders reserve space to prevent CLS once ads load.
+- [ ] Verify images use lazy loading and appropriate formats.
+- [ ] Check mobile usability in Search Console (no tap-target or viewport errors).
+
+### 5. AdSense Readiness
+- [ ] AdSense script is present in `index.html` (`ca-pub-2792270543219767`) — confirm publisher ID matches your account.
+- [ ] All required policy pages are live and linked in the footer: **Privacy Policy**, **Terms**, **Disclaimer**, **Contact**, **About**.
+- [ ] Privacy Policy mentions cookies, third-party ads, and Google AdSense usage.
+- [ ] Each tool page has substantive original content (intro, how-to, FAQs) — verify via `src/lib/toolContent.ts`.
+- [ ] No prohibited content (adult, copyrighted, misleading) — review tool descriptions and FAQs.
+- [ ] Site navigation is clear, with working internal links and no broken routes (validate via `/tool-status`).
+- [ ] Submit the site for AdSense review at [adsense.google.com](https://www.google.com/adsense). Approval typically takes 1–14 days.
+- [ ] After approval, replace `AdSlot` placeholders with live `<ins class="adsbygoogle">` units and re-test CLS.
+
+### 6. Ongoing Monitoring
+- [ ] Weekly: check Search Console for new coverage errors or manual actions.
+- [ ] Monthly: refresh `lastmod` dates in `public/sitemap.xml` when content changes.
+- [ ] Monitor AdSense **Policy center** for any violations after going live.
