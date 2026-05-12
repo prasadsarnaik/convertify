@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /tool-status
 
 Sitemap: https://convertify.app/sitemap.xml
