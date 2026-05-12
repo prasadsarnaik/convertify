@@ -2,7 +2,6 @@
 // 100% client-side PDF -> Word (DOCX) using pdfjs-dist + docx.
 
 import * as pdfjsLib from "pdfjs-dist";
-// @ts-expect-error - vite ?url import for pdfjs worker
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
 import {
   Document,
