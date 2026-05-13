@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import compression from "vite-plugin-compression";
-// @ts-ignore
+// @ts-expect-error package does not ship public types
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/

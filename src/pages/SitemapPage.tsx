@@ -21,6 +21,7 @@ const SitemapPage = () => (
       title="HTML Sitemap"
       description="Browse the main pages, legal pages, and file tool pages available on Convertify."
       path="/sitemap"
+      noindex
     />
     <Navbar />
     <main className="pt-28 pb-20">

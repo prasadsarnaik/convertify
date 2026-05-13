@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolWorkspace from "@/components/ToolWorkspace";
+import ToolContentSections from "@/components/ToolContentSections";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
 import MergePdfWorkspace from "@/components/MergePdfWorkspace";
@@ -90,7 +91,12 @@ const ToolPage = () => {
         structuredData={structuredData}
       />
       <Navbar />
-      {Workspace ? <Workspace /> : <ToolWorkspace toolName={toolName} toolSlug={slug || ""} />}
+      {Workspace ? (
+        <Workspace />
+      ) : (
+        <ToolWorkspace toolName={toolName} toolSlug={slug || ""} />
+      )}
+      <ToolContentSections toolSlug={toolSlug} />
       <Footer />
     </>
   );

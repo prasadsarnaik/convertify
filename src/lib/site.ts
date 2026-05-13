@@ -853,6 +853,8 @@ export const toolSeoMap = Object.fromEntries(
 ) as Record<string, ToolSeoContent>;
 
 export const allIndexableRoutes = [
-  ...siteRoutes.map((route) => route.path),
+  ...siteRoutes
+    .filter((route) => !["/tool-status", "/sitemap"].includes(route.path))
+    .map((route) => route.path),
   ...toolSeoContent.map((tool) => `/tool/${tool.slug}`),
 ];

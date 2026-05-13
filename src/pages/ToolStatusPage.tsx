@@ -77,6 +77,7 @@ const ToolStatusPage = () => {
         title="Tool Status"
         description="Check the current implementation status of Convertify PDF and image tools."
         path="/tool-status"
+        noindex
       />
       <Navbar />
       <div className="min-h-screen pt-28 pb-20">
