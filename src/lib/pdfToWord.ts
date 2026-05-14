@@ -154,6 +154,9 @@ export async function convertPdfToWord(file: File): Promise<ConversionResult> {
         }),
       );
     } else {
+      // Group consecutive lines (small gap) into paragraphs
+      type Group = { heading?: typeof HeadingLevel.HEADING_1 | typeof HeadingLevel.HEADING_2; runs: Run[] };
+      const groups: Group[] = [];
       let prevY: number | null = null;
       let prevHeight = medianSize;
 
@@ -161,57 +164,47 @@ export async function convertPdfToWord(file: File): Promise<ConversionResult> {
         const text = line.runs.map((r) => r.text).join("").trim();
         if (!text) return;
 
-        // Detect paragraph break: large gap above this line
         const gap = prevY === null ? 0 : prevY - line.y - prevHeight;
         const isNewParagraph = prevY === null || gap > prevHeight * 0.6;
 
-        // Detect heading by font size relative to median
         let heading: typeof HeadingLevel.HEADING_1 | typeof HeadingLevel.HEADING_2 | undefined;
         if (line.height >= h1Threshold) heading = HeadingLevel.HEADING_1;
         else if (line.height >= h2Threshold) heading = HeadingLevel.HEADING_2;
 
-        if (isNewParagraph) {
-          children.push(
-            new Paragraph({
-              heading,
-              alignment: AlignmentType.LEFT,
-              spacing: { after: 120 },
-              children: line.runs
-                .filter((r) => r.text.trim().length > 0 || r.text === " ")
-                .map(
-                  (r) =>
-                    new TextRun({
-                      text: r.text,
-                      bold: r.bold || !!heading,
-                      italics: r.italic,
-                      size: ptToHalfPt(r.size),
-                    }),
-                ),
-            }),
-          );
+        if (isNewParagraph || heading) {
+          groups.push({ heading, runs: [...line.runs] });
         } else {
-          // Append to previous paragraph as a soft line break
-          const last = children[children.length - 1];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const lastChildren = (last as any).options?.children as TextRun[] | undefined;
-          if (lastChildren) {
-            lastChildren.push(new TextRun({ text: " ", break: 0 }));
-            for (const r of line.runs) {
-              lastChildren.push(
-                new TextRun({
-                  text: r.text,
-                  bold: r.bold,
-                  italics: r.italic,
-                  size: ptToHalfPt(r.size),
-                }),
-              );
-            }
+          const g = groups[groups.length - 1];
+          // Add a space between joined lines
+          if (g.runs.length > 0) {
+            const last = g.runs[g.runs.length - 1];
+            if (!last.text.endsWith(" ")) last.text += " ";
           }
+          g.runs.push(...line.runs);
         }
 
         prevY = line.y;
         prevHeight = line.height;
       });
+
+      for (const g of groups) {
+        children.push(
+          new Paragraph({
+            heading: g.heading,
+            alignment: AlignmentType.LEFT,
+            spacing: { after: g.heading ? 200 : 120 },
+            children: g.runs.map(
+              (r) =>
+                new TextRun({
+                  text: r.text,
+                  bold: r.bold || !!g.heading,
+                  italics: r.italic,
+                  size: ptToHalfPt(r.size),
+                }),
+            ),
+          }),
+        );
+      }
     }
 
     if (pageNum < pdf.numPages) {
