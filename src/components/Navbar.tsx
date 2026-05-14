@@ -4,7 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 import convertifyLogo from "@/assets/convertify-logo.png";
 import { useState, useEffect, useRef, useCallback } from "react";
 import ThemeToggle from "./ThemeToggle";
-import InstantConvertCTA from "./InstantConvertCTA";
 
 const navLinks = [
   { label: "Tools", href: "/tools" },
@@ -75,7 +74,12 @@ const Navbar = () => {
           {/* Desktop CTA + Toggle */}
           <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
-            <InstantConvertCTA to="/tools" />
+            <Link
+              to="/tools"
+              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              Start Free
+            </Link>
           </div>
 
           {/* Mobile: Toggle + hamburger */}
@@ -130,9 +134,14 @@ const Navbar = () => {
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.25, delay: navLinks.length * 0.05 }}
-                  className="mt-3"
                 >
-                  <InstantConvertCTA to="/tools" onClick={() => setMenuOpen(false)} fullWidth />
+                  <Link
+                    to="/tools"
+                    onClick={() => setMenuOpen(false)}
+                    className="block mt-3 px-4 py-3 rounded-full bg-primary text-primary-foreground text-base font-medium text-center hover:opacity-90 transition-opacity"
+                  >
+                    Start Free
+                  </Link>
                 </motion.div>
               </div>
             </motion.div>
