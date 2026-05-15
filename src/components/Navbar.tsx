@@ -71,20 +71,14 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop CTA + Toggle */}
-          <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
-            <Link
-              to="/tools"
-              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              Start Free
-            </Link>
+          {/* Desktop CTA: premium animated theme toggle */}
+          <div className="hidden lg:flex items-center">
+            <ThemeToggle size="lg" />
           </div>
 
           {/* Mobile: Toggle + hamburger */}
           <div className="flex lg:hidden items-center gap-2">
-            <ThemeToggle />
+            <ThemeToggle size="lg" />
             <button
               onClick={toggleMenu}
               className="p-2 rounded-xl hover:bg-muted transition-colors shrink-0"
