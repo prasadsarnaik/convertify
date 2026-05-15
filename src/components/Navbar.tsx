@@ -124,19 +124,6 @@ const Navbar = () => {
                     </Link>
                   </motion.div>
                 ))}
-                <motion.div
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.25, delay: navLinks.length * 0.05 }}
-                >
-                  <Link
-                    to="/tools"
-                    onClick={() => setMenuOpen(false)}
-                    className="block mt-3 px-4 py-3 rounded-full bg-primary text-primary-foreground text-base font-medium text-center hover:opacity-90 transition-opacity"
-                  >
-                    Start Free
-                  </Link>
-                </motion.div>
               </div>
             </motion.div>
           )}
