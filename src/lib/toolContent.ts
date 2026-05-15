@@ -192,6 +192,16 @@ export const TOOL_META: Record<string, ToolMeta> = {
     "PDF to Word converts your PDF into an editable .docx file you can open in Microsoft Word, Google Docs or Pages. Perfect for reusing text, updating contracts or repurposing reports.",
     ["word-to-pdf", "edit-pdf", "merge-pdf"],
   ),
+  "excel-to-pdf": make(
+    "excel-to-pdf",
+    "Excel to PDF",
+    "Convert XLSX, XLS and CSV spreadsheets to PDF",
+    "convert",
+    "Convert Excel spreadsheets (XLSX, XLS, CSV) into clean PDF tables online — free, fast, and 100% private.",
+    ["excel to pdf", "xlsx to pdf", "csv to pdf", "convert excel to pdf online", "spreadsheet to pdf"],
+    "Excel to PDF turns your spreadsheets into clean, paginated PDF tables with selectable text. Each sheet becomes its own section, perfect for sharing reports, invoices and data exports without exposing the raw workbook.",
+    ["pdf-to-word", "word-to-pdf", "merge-pdf"],
+  ),
   "image-to-pdf": make(
     "image-to-pdf",
     "Image to PDF",

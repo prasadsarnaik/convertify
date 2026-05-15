@@ -1,69 +1,45 @@
 ## Goal
+Add a new **Excel → PDF** tool that runs 100% in the browser (no API), matching the existing tool architecture (Word→PDF, PDF→Word).
 
-Both tools already run 100% in the browser with no API. The problem is **output quality**:
+## Approach
+Use **SheetJS (`xlsx`)** to parse `.xlsx` / `.xls` / `.csv` into rows, then render each sheet into a PDF with **jsPDF + jspdf-autotable** as native, selectable tables.
 
-- **Word → PDF** currently rasterizes the page with `html2canvas` → the PDF is just a picture. Text isn't selectable or searchable, file size is huge, and it looks blurry on zoom.
-- **PDF → Word** currently dumps every line as a plain paragraph at the same font size → loses bold, italic, headings, font sizes, and paragraph grouping.
-
-I'll rewrite both converters to produce **true, selectable, formatted output** — still entirely client-side.
-
----
-
-## Word → PDF (`src/lib/wordToPdf.ts`)
-
-Replace the html2canvas raster pipeline with a **native jsPDF text renderer**:
-
-1. `mammoth.convertToHtml()` → semantic HTML (headings, paragraphs, lists, tables, bold/italic, images as base64).
-2. Walk the HTML DOM and emit jsPDF instructions:
-   - `<h1>/<h2>/<h3>` → larger bold text with spacing
-   - `<p>` → body text with `splitTextToSize` for word-wrap
-   - `<strong>/<em>` → `setFont("helvetica","bold"|"italic")` runs
-   - `<ul>/<ol>` → bullet/number prefix + indent
-   - `<table>` → simple grid using `jspdf-autotable` (already common; will add if missing)
-   - `<img>` → `pdf.addImage()` at intrinsic size, scaled to page width
-3. Manual page-break logic: track `cursorY`, call `pdf.addPage()` when content exceeds usable height.
-4. A4 portrait, 40 pt margins, Helvetica 11 pt body.
-
-Result: small file size, **selectable & searchable text**, crisp at any zoom.
-
-Fallback: if rendering throws on an exotic element, log and skip that node rather than failing the whole conversion.
-
----
-
-## PDF → Word (`src/lib/pdfToWord.ts`)
-
-Upgrade the pdf.js extraction to preserve formatting:
-
-1. For each page, call `getTextContent()` and also `getOperatorList()` to read font names + sizes per item.
-2. Group items into **lines** by Y (existing logic) and into **paragraphs** by line-gap heuristic (gap > 1.5× line-height = new paragraph).
-3. For each text item:
-   - Detect **bold** if font name contains `Bold|Black|Heavy`
-   - Detect **italic** if font name contains `Italic|Oblique`
-   - Carry **font size** through to docx `TextRun({ size: ptToHalfPt(size) })`
-4. Detect headings: lines whose font size is ≥ 1.3× the page median → `HeadingLevel.HEADING_1/2`.
-5. Preserve runs within a line (multiple `TextRun`s per `Paragraph`) so partial-bold/italic survives.
-6. Keep the existing page-break and Calibri default.
-
-Result: docx that opens in Word/Google Docs with real headings, bold, italic, and proportional font sizes — fully editable.
-
----
+- Selectable/searchable text (not rasterized)
+- Multi-sheet support → each sheet starts on a new page with its name as a heading
+- Auto-fit columns, repeat header rows, A4 landscape (better for wide sheets)
+- Handles large sheets via autoTable's automatic page breaks
+- Clear error if file is password-protected or corrupt
 
 ## Files
 
-- **Edit** `src/lib/wordToPdf.ts` — full rewrite of `convertWordToPdf`; remove `html2canvas` usage.
-- **Edit** `src/lib/pdfToWord.ts` — upgrade `buildLinesFromTextContent` + paragraph builder.
-- **Possibly add** `jspdf-autotable` dependency for clean table rendering in Word→PDF (small, ~30 KB).
-- No UI changes — `WordToPDFTool.tsx` / `PdfToWordTool.tsx` already wire up correctly.
+**New:**
+- `src/lib/excelToPdf.ts` — `convertExcelToPdf(file: File): Promise<Blob>`
+  - Read file → `XLSX.read(arrayBuffer, { type: 'array' })`
+  - For each sheet: `XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' })`
+  - First page: jsPDF landscape A4. For each sheet, add page (except first), draw sheet name as H2, then `autoTable({ head: [row0], body: rows.slice(1), styles: { fontSize: 9 }, headStyles: { fillColor: [99,102,241] } })`
+  - Returns Blob via `pdf.output('blob')`
+- `src/components/ExcelToPdfTool.tsx` — workspace UI mirroring `WordToPDFTool.tsx` (dropzone for `.xlsx/.xls/.csv`, convert button, progress, mobile-safe download via existing blob utility)
+
+**Edit:**
+- `src/pages/ToolPage.tsx` — register `"excel-to-pdf": ExcelToPdfTool` in `DEDICATED_WORKSPACES`
+- `src/components/ToolsGrid.tsx` — add tool card (icon `FileSpreadsheet`, slug `excel-to-pdf`)
+- `src/pages/ToolsPage.tsx` — add to `pdfTools` array
+- `src/lib/toolContent.ts` — add SEO meta, description, FAQs for `excel-to-pdf`
+- `src/lib/toolContentLong.ts` — add long-form content + extra FAQs
+- `public/sitemap.xml` — add `/excel-to-pdf` URL
+
+**Dependencies:**
+- `xlsx` (SheetJS community build) — `bun add xlsx`
+- `jspdf-autotable` — `bun add jspdf-autotable` (jsPDF is already installed)
 
 ## Validation
-
 1. `npm run build` passes.
-2. Manually convert a sample DOCX with headings, bold, a list, and an image → open the PDF, confirm text is selectable (Ctrl+F finds words).
-3. Manually convert a sample PDF → open the DOCX in Word/Google Docs, confirm headings/bold/sizes are preserved.
-4. Confirm the existing Vitest suite still passes.
+2. Convert a multi-sheet `.xlsx` with text + numbers → open PDF, confirm each sheet on its own page(s), text is selectable, tables render with header styling.
+3. Convert a `.csv` → single page table renders.
+4. Convert a wide sheet (20+ columns) → autoTable shrinks/wraps without overflow.
+5. SEO: new route `/excel-to-pdf` resolves, title/description present, sitemap includes it.
 
 ## Out of Scope
-
-- **Scanned (image-only) PDFs** — still won't yield text without OCR. I'll surface a clearer error: *"This PDF appears to be scanned. Text extraction requires OCR (not yet supported)."*
-- **Legacy `.doc`** files — remain unsupported in-browser; the existing validation message stays.
-- **Pixel-perfect Word layout** in the PDF (columns, exact fonts, headers/footers) — true fidelity requires LibreOffice/Word and isn't possible purely client-side.
+- Pixel-perfect Excel formatting (cell colors, merged cells, formulas as rendered values only — formulas show their computed result via SheetJS)
+- Charts and embedded images inside the workbook
+- `.xlsb` / password-protected workbooks (clear error message shown)

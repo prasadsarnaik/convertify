@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import {
   Layers, Scissors, Archive, FileImage, ImagePlus, RotateCw,
   Edit, FileUp, ArrowRightLeft, Shrink, Image, ZoomIn,
-  Lock, Unlock, Pen, FileText,
+  Lock, Unlock, Pen, FileText, FileSpreadsheet,
 } from "lucide-react";
 
 const tools = [
   { name: "Word to PDF", desc: "Convert DOC & DOCX to PDF", icon: FileText, color: "from-blue-500 to-indigo-600", slug: "word-to-pdf" },
   { name: "PDF to Word", desc: "Convert PDF to editable Word", icon: FileText, color: "from-indigo-500 to-purple-600", slug: "pdf-to-word" },
+  { name: "Excel to PDF", desc: "Convert XLSX & CSV to PDF", icon: FileSpreadsheet, color: "from-green-500 to-emerald-600", slug: "excel-to-pdf" },
   { name: "Merge PDF", desc: "Combine multiple PDFs into one", icon: Layers, color: "from-accent-blue to-accent-purple", slug: "merge-pdf" },
   { name: "Split PDF", desc: "Extract pages from a PDF", icon: Scissors, color: "from-accent-purple to-accent-pink", slug: "split-pdf" },
   { name: "Compress PDF", desc: "Reduce PDF file size", icon: Archive, color: "from-accent-pink to-accent-orange", slug: "compress-pdf" },

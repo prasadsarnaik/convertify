@@ -16,6 +16,7 @@ import UnlockPdfWorkspace from "@/components/UnlockPdfWorkspace";
 import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
+import ExcelToPdfTool from "@/components/ExcelToPdfTool";
 import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
 import { getToolLongForm } from "@/lib/toolContentLong";
@@ -26,6 +27,7 @@ const formatSlug = (slug: string) =>
 const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "word-to-pdf": WordToPDFTool,
   "pdf-to-word": PdfToWordTool,
+  "excel-to-pdf": ExcelToPdfTool,
   "merge-pdf": MergePdfWorkspace,
   "edit-pdf": EditPdfWorkspace,
   "rotate-image": RotateImageWorkspace,
