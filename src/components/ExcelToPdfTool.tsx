@@ -19,11 +19,11 @@ import {
 import { toast } from "sonner";
 
 import {
-  convertWordToPdf,
+  convertExcelToPdf,
   formatFileSize,
   type ConversionResult,
-  validateWordFile,
-} from "@/lib/wordToPdf";
+  validateExcelFile,
+} from "@/lib/excelToPdf";
 
 interface FileItem {
   id: string;
@@ -49,12 +49,12 @@ const highlights = [
 ];
 
 const steps = [
-  "Upload your Word document",
+  "Upload your Excel spreadsheet",
   "Start the conversion",
   "Download the generated PDF",
 ];
 
-const WordToPDFTool = () => {
+const ExcelToPdfTool = () => {
   const [file, setFile] = useState<FileItem | null>(null);
   const [stage, setStage] = useState<"upload" | "processing" | "done" | "error">("upload");
   const [result, setResult] = useState<ConversionResult | null>(null);
@@ -64,7 +64,7 @@ const WordToPDFTool = () => {
     if (accepted.length === 0) return;
 
     const selectedFile = accepted[0];
-    const validation = validateWordFile(selectedFile);
+    const validation = validateExcelFile(selectedFile);
 
     if (!validation.valid) {
       toast.error(validation.error);
@@ -83,8 +83,10 @@ const WordToPDFTool = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+      "application/vnd.ms-excel": [".xls"],
+      "text/csv": [".csv"],
+      "application/vnd.oasis.opendocument.spreadsheet": [".ods"],
     },
     multiple: false,
     maxSize: 25 * 1024 * 1024,
@@ -104,7 +106,7 @@ const WordToPDFTool = () => {
     setError("");
 
     try {
-      const conversionResult = await convertWordToPdf(file.file);
+      const conversionResult = await convertExcelToPdf(file.file);
       setResult(conversionResult);
       setStage("done");
       toast.success("Conversion completed successfully.");
@@ -163,22 +165,22 @@ const WordToPDFTool = () => {
             >
               <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/90 px-4 py-2 text-sm font-medium text-muted-foreground shadow-card backdrop-blur">
                 <Sparkles className="h-4 w-4 text-accent-blue" />
-                Clean Word to PDF conversion
+                Clean Excel to PDF conversion
               </div>
 
               <h1 className="mt-6 max-w-2xl text-4xl font-extrabold leading-tight text-foreground sm:text-5xl md:text-6xl">
-                Turn Word documents into polished PDFs in one screen.
+                Turn Excel spreadsheets into polished PDFs in one screen.
               </h1>
 
               <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-                Convert Word files into shareable PDFs with a clearer, more
+                Convert Excel files into shareable PDFs with a clearer, more
                 polished workspace that keeps upload, processing, and download
                 in one place.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <div className="rounded-full border border-border bg-card px-4 py-2 text-sm text-foreground shadow-card">
-                  Supports `.doc` and `.docx`
+                  Supports `.xlsx`, `.xls`, `.csv` and `.ods`
                 </div>
                 <div className="rounded-full border border-border bg-card px-4 py-2 text-sm text-foreground shadow-card">
                   Up to 25MB per file
@@ -225,7 +227,7 @@ const WordToPDFTool = () => {
                       Workspace
                     </p>
                     <h2 className="mt-2 text-2xl font-bold text-foreground">
-                      Convert Word to PDF
+                      Convert Excel to PDF
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">
                       Upload one file, convert it, and download the final PDF
@@ -259,17 +261,20 @@ const WordToPDFTool = () => {
                           <Upload className="h-7 w-7 text-accent-blue" />
                         </div>
                         <p className="mt-5 text-lg font-semibold text-foreground">
-                          Drop your Word file here
+                          Drop your Excel file here
                         </p>
                         <p className="mt-2 text-sm leading-6 text-muted-foreground">
                           Click to browse or drag a file into the upload zone.
                         </p>
                         <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
                           <span className="rounded-full border border-border bg-background px-3 py-1.5">
-                            DOC
+                            XLSX
                           </span>
                           <span className="rounded-full border border-border bg-background px-3 py-1.5">
-                            DOCX
+                            XLS
+                          </span>
+                          <span className="rounded-full border border-border bg-background px-3 py-1.5">
+                            CSV
                           </span>
                           <span className="rounded-full border border-border bg-background px-3 py-1.5">
                             Max 25MB
@@ -483,4 +488,4 @@ const WordToPDFTool = () => {
   );
 };
 
-export default WordToPDFTool;
+export default ExcelToPdfTool;
