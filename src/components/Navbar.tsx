@@ -71,20 +71,14 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop CTA + Toggle */}
-          <div className="hidden lg:flex items-center gap-3">
-            <ThemeToggle />
-            <Link
-              to="/tools"
-              className="px-4 py-2 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              Start Free
-            </Link>
+          {/* Desktop CTA: premium animated theme toggle */}
+          <div className="hidden lg:flex items-center">
+            <ThemeToggle size="lg" />
           </div>
 
           {/* Mobile: Toggle + hamburger */}
           <div className="flex lg:hidden items-center gap-2">
-            <ThemeToggle />
+            <ThemeToggle size="lg" />
             <button
               onClick={toggleMenu}
               className="p-2 rounded-xl hover:bg-muted transition-colors shrink-0"
@@ -130,19 +124,6 @@ const Navbar = () => {
                     </Link>
                   </motion.div>
                 ))}
-                <motion.div
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.25, delay: navLinks.length * 0.05 }}
-                >
-                  <Link
-                    to="/tools"
-                    onClick={() => setMenuOpen(false)}
-                    className="block mt-3 px-4 py-3 rounded-full bg-primary text-primary-foreground text-base font-medium text-center hover:opacity-90 transition-opacity"
-                  >
-                    Start Free
-                  </Link>
-                </motion.div>
               </div>
             </motion.div>
           )}
