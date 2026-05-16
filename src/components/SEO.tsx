@@ -8,6 +8,7 @@ interface SEOProps {
   image?: string;
   jsonLd?: object | object[];
   noindex?: boolean;
+  keywords?: string[];
 }
 
 export const SITE = "https://convertify.app";
@@ -21,6 +22,7 @@ const SEO = ({
   image = DEFAULT_OG,
   jsonLd,
   noindex,
+  keywords,
 }: SEOProps) => {
   const url = `${SITE}${path}`;
   const full = `${title} — Convertify`;
@@ -30,6 +32,9 @@ const SEO = ({
     <Helmet>
       <title>{full}</title>
       <meta name="description" content={description} />
+      {keywords && keywords.length > 0 && (
+        <meta name="keywords" content={keywords.join(", ")} />
+      )}
       <link rel="canonical" href={url} />
       {noindex && <meta name="robots" content="noindex, nofollow" />}
       <meta property="og:title" content={full} />
