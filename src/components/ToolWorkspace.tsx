@@ -57,7 +57,7 @@ interface FileItem {
 
 type Stage = "upload" | "processing" | "done" | "error";
 
-const ToolWorkspace = ({ toolName, toolSlug }: { toolName: string; toolSlug: string }) => {
+const ToolWorkspace = ({ toolName, toolSlug, tagline }: { toolName: string; toolSlug: string; tagline?: string }) => {
   const config = getToolConfig(toolSlug);
   const [files, setFiles] = useState<FileItem[]>([]);
   const [stage, setStage] = useState<Stage>("upload");
