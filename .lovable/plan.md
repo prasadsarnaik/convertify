@@ -1,45 +1,35 @@
-## Goal
-Add a new **Excel → PDF** tool that runs 100% in the browser (no API), matching the existing tool architecture (Word→PDF, PDF→Word).
+## Hero Section SEO Redesign
 
-## Approach
-Use **SheetJS (`xlsx`)** to parse `.xlsx` / `.xls` / `.csv` into rows, then render each sheet into a PDF with **jsPDF + jspdf-autotable** as native, selectable tables.
+### Goal
+Redesign the hero headline and subheadline for better SEO while preserving the premium, minimal Convertify aesthetic.
 
-- Selectable/searchable text (not rasterized)
-- Multi-sheet support → each sheet starts on a new page with its name as a heading
-- Auto-fit columns, repeat header rows, A4 landscape (better for wide sheets)
-- Handles large sheets via autoTable's automatic page breaks
-- Clear error if file is password-protected or corrupt
+### Copy Changes
+- **Headline (h1):** "Convert Files Instantly Online" — with "Instantly Online" highlighted via the existing accent gradient.
+- **Subheadline (p):** "Free online PDF, Word, JPG, PNG, and file conversion tools. Fast, secure, and easy to use."
 
-## Files
+### SEO Meta Updates
+- Update `<title>` in `index.html` to: "Convertify – Free Online File Converter"
+- Update `<meta name="description">` in `index.html` to: "Convert PDF, Word, JPG, PNG, and more with Convertify. Free online file converter with fast, secure, and easy tools."
+- Verify no other H1s exist on the Index page.
 
-**New:**
-- `src/lib/excelToPdf.ts` — `convertExcelToPdf(file: File): Promise<Blob>`
-  - Read file → `XLSX.read(arrayBuffer, { type: 'array' })`
-  - For each sheet: `XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' })`
-  - First page: jsPDF landscape A4. For each sheet, add page (except first), draw sheet name as H2, then `autoTable({ head: [row0], body: rows.slice(1), styles: { fontSize: 9 }, headStyles: { fillColor: [99,102,241] } })`
-  - Returns Blob via `pdf.output('blob')`
-- `src/components/ExcelToPdfTool.tsx` — workspace UI mirroring `WordToPDFTool.tsx` (dropzone for `.xlsx/.xls/.csv`, convert button, progress, mobile-safe download via existing blob utility)
+### UI Enhancements
+- Add a subtle animated radial gradient glow behind the headline (CSS-only, low-motion-safe).
+- Apply a gentle floating animation to the hero content container.
+- Add smooth hover transitions (scale + shadow) to the existing CTA buttons.
+- Improve mobile text wrapping with `text-balance` and responsive sizing.
+- Keep all existing spacing, button layout, and Framer Motion entrance animations intact.
 
-**Edit:**
-- `src/pages/ToolPage.tsx` — register `"excel-to-pdf": ExcelToPdfTool` in `DEDICATED_WORKSPACES`
-- `src/components/ToolsGrid.tsx` — add tool card (icon `FileSpreadsheet`, slug `excel-to-pdf`)
-- `src/pages/ToolsPage.tsx` — add to `pdfTools` array
-- `src/lib/toolContent.ts` — add SEO meta, description, FAQs for `excel-to-pdf`
-- `src/lib/toolContentLong.ts` — add long-form content + extra FAQs
-- `public/sitemap.xml` — add `/excel-to-pdf` URL
+### Files to Edit
+- `src/components/Hero.tsx` — copy, gradient highlight, glow, floating animation, button hovers
+- `index.html` — `<title>` and `<meta name="description">`
 
-**Dependencies:**
-- `xlsx` (SheetJS community build) — `bun add xlsx`
-- `jspdf-autotable` — `bun add jspdf-autotable` (jsPDF is already installed)
+### Validation
+- Build passes
+- Only one `<h1>` on the page
+- Gradient glow and floating animation render correctly on mobile and desktop
+- No layout breakage
 
-## Validation
-1. `npm run build` passes.
-2. Convert a multi-sheet `.xlsx` with text + numbers → open PDF, confirm each sheet on its own page(s), text is selectable, tables render with header styling.
-3. Convert a `.csv` → single page table renders.
-4. Convert a wide sheet (20+ columns) → autoTable shrinks/wraps without overflow.
-5. SEO: new route `/excel-to-pdf` resolves, title/description present, sitemap includes it.
-
-## Out of Scope
-- Pixel-perfect Excel formatting (cell colors, merged cells, formulas as rendered values only — formulas show their computed result via SheetJS)
-- Charts and embedded images inside the workbook
-- `.xlsb` / password-protected workbooks (clear error message shown)
+## Technical Notes
+- Use Tailwind semantic tokens and existing gradient variables.
+- Keep animations lightweight (`transform`/`opacity` only) for Core Web Vitals.
+- Wrap animations in `@media (prefers-reduced-motion: no-preference)` where appropriate.
