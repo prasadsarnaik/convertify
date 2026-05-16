@@ -22,6 +22,7 @@ const SEO = ({
   image = DEFAULT_OG,
   jsonLd,
   noindex,
+  keywords,
 }: SEOProps) => {
   const url = `${SITE}${path}`;
   const full = `${title} — Convertify`;
