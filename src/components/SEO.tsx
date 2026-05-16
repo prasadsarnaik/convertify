@@ -8,6 +8,7 @@ interface SEOProps {
   image?: string;
   jsonLd?: object | object[];
   noindex?: boolean;
+  keywords?: string[];
 }
 
 export const SITE = "https://convertify.app";
