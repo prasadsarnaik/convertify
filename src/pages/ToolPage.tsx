@@ -113,7 +113,7 @@ const ToolPage = () => {
         jsonLd={jsonLd}
       />
       <Navbar />
-      {Workspace ? <Workspace /> : <ToolWorkspace toolName={name} toolSlug={slug} />}
+      {Workspace ? <Workspace /> : <ToolWorkspace toolName={name} toolSlug={slug} tagline={meta?.tagline} />}
       {meta && <ToolContent meta={meta} />}
       <Footer />
     </>
