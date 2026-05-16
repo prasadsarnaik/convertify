@@ -31,8 +31,8 @@ const websiteLd = {
 const Index = () => (
   <>
     <SEO
-      title="Convert Anything Instantly"
-      description="Free online PDF and image tools — merge, split, compress, convert, sign and protect documents securely in your browser. No sign-up, no watermark."
+      title="Free Online File Converter"
+      description="Convert PDF, Word, JPG, PNG, and more with Convertify. Free online file converter with fast, secure, and easy tools."
       path="/"
       jsonLd={[orgLd, websiteLd, homeFaqLd]}
     />
