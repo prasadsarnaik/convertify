@@ -61,6 +61,11 @@ const ToolPage = () => {
   // Canonical points to the short URL (/merge-pdf), not the legacy /tool/:slug
   const canonicalPath = `/${slug}`;
 
+  // SEO-friendly title: "Merge PDF — Combine multiple PDFs into one document | Free Online Tool"
+  const seoTitle = meta
+    ? `${name} — ${meta.tagline} | Free Online Tool`
+    : `${name} | Free Online Tool`;
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -101,9 +106,10 @@ const ToolPage = () => {
   return (
     <>
       <SEO
-        title={name}
+        title={seoTitle}
         description={description}
         path={canonicalPath}
+        keywords={meta?.keywords}
         jsonLd={jsonLd}
       />
       <Navbar />
