@@ -133,7 +133,7 @@ const ToolWorkspace = ({ toolName, toolSlug, tagline }: { toolName: string; tool
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center mb-2">{toolName}</h1>
-          <p className="text-muted-foreground text-center mb-10">Upload your files to get started.</p>
+          <p className="text-muted-foreground text-center mb-10">{tagline ?? "Upload your files to get started."}</p>
 
           <div className="rounded-2xl border border-border bg-background shadow-stage p-8">
             <AnimatePresence mode="wait">
