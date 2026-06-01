@@ -244,82 +244,62 @@ const WordToPDFTool = () => {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
-                      className="space-y-6 pt-6"
+                      className="space-y-4 pt-6"
                     >
-                      <div
-                        {...getRootProps()}
-                        className={`rounded-[1.5rem] border-2 border-dashed p-8 text-center transition-all sm:p-10 ${
-                          isDragActive
-                            ? "border-primary bg-primary/5 shadow-card"
-                            : "border-border bg-card/60 hover:border-primary/35 hover:bg-card"
-                        }`}
-                      >
-                        <input {...getInputProps()} />
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-background shadow-card">
-                          <Upload className="h-7 w-7 text-accent-blue" />
-                        </div>
-                        <p className="mt-5 text-lg font-semibold text-foreground">
-                          Drop your Word file here
-                        </p>
-                        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                          Click to browse or drag a file into the upload zone.
-                        </p>
-                        <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <span className="rounded-full border border-border bg-background px-3 py-1.5">
-                            DOC
-                          </span>
-                          <span className="rounded-full border border-border bg-background px-3 py-1.5">
-                            DOCX
-                          </span>
-                          <span className="rounded-full border border-border bg-background px-3 py-1.5">
-                            Max 25MB
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-3 sm:grid-cols-3">
-                        {steps.map((step, index) => (
-                          <div
-                            key={step}
-                            className="rounded-2xl border border-border bg-card/70 p-4"
-                          >
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-background text-sm font-semibold text-foreground shadow-card">
-                              {index + 1}
-                            </div>
-                            <p className="mt-3 text-sm font-medium leading-6 text-foreground">
-                              {step}
-                            </p>
+                      {!file ? (
+                        <div
+                          {...getRootProps()}
+                          className={`cursor-pointer rounded-[1.5rem] border-2 border-dashed p-8 text-center transition-all sm:p-10 ${
+                            isDragActive
+                              ? "border-primary bg-primary/5 shadow-card"
+                              : "border-border bg-card/60 hover:border-primary/35 hover:bg-card"
+                          }`}
+                        >
+                          <input {...getInputProps()} />
+                          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-background shadow-card">
+                            <Upload className="h-7 w-7 text-accent-blue" />
                           </div>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center gap-2 rounded-2xl border border-border bg-card/70 px-4 py-3 text-sm text-muted-foreground">
-                        <Shield className="h-4 w-4 shrink-0 text-accent-green" />
-                        Your file is used only for processing and download.
-                      </div>
-
-                      {stage === "error" && error && (
-                        <div className="flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/10 p-4">
-                          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">
-                              Conversion failed
-                            </p>
-                            <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                              {error}
-                            </p>
+                          <p className="mt-5 text-lg font-semibold text-foreground">
+                            Drop your Word file here
+                          </p>
+                          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                            Click to browse or drag a file into the upload zone.
+                          </p>
+                          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+                            <span className="rounded-full border border-border bg-background px-3 py-1.5">DOC</span>
+                            <span className="rounded-full border border-border bg-background px-3 py-1.5">DOCX</span>
+                            <span className="rounded-full border border-border bg-background px-3 py-1.5">Max 25MB</span>
                           </div>
                         </div>
-                      )}
-
-                      {file && (
-                        <div className="space-y-4 rounded-[1.5rem] border border-border bg-card/80 p-4 sm:p-5">
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.97 }}
+                          animate={{
+                            opacity: 1,
+                            scale: 1,
+                            boxShadow: [
+                              "0 0 0 0 hsl(var(--accent-green) / 0)",
+                              "0 0 0 12px hsl(var(--accent-green) / 0.18)",
+                              "0 0 0 0 hsl(var(--accent-green) / 0)",
+                            ],
+                          }}
+                          transition={{ duration: 0.7 }}
+                          className="space-y-4 rounded-[1.5rem] border-2 border-accent-green/40 bg-accent-green/5 p-5 sm:p-6"
+                        >
                           <div className="flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background shadow-card">
-                              <FileText className="h-5 w-5 text-accent-blue" />
-                            </div>
+                            <motion.div
+                              initial={{ scale: 0.5, rotate: -15 }}
+                              animate={{ scale: 1, rotate: 0 }}
+                              transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent-green/15 text-accent-green"
+                            >
+                              <CheckCircle className="h-6 w-6" />
+                            </motion.div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-semibold text-foreground">
+                              <p className="text-sm font-semibold text-accent-green">
+                                File uploaded successfully
+                              </p>
+                              <p className="mt-0.5 truncate text-sm font-medium text-foreground">
                                 {file.file.name}
                               </p>
                               <p className="text-xs text-muted-foreground">
@@ -335,17 +315,53 @@ const WordToPDFTool = () => {
                               <X className="h-4 w-4" />
                             </button>
                           </div>
+                          <div className="flex flex-col gap-2 sm:flex-row">
+                            <button
+                              type="button"
+                              onClick={handleConvert}
+                              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-foreground px-5 py-3.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+                            >
+                              Convert to PDF
+                              <ArrowRight className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={removeFile}
+                              className="rounded-2xl border border-border bg-background px-5 py-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+                            >
+                              Change file
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
 
-                          <button
-                            type="button"
-                            onClick={handleConvert}
-                            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-foreground px-5 py-3.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-                          >
-                            Convert to PDF
-                            <ArrowRight className="h-4 w-4" />
-                          </button>
+                      {stage === "error" && error && (
+                        <div className="flex items-start gap-3 rounded-2xl border border-destructive/20 bg-destructive/10 p-4">
+                          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">Conversion failed</p>
+                            <p className="mt-1 text-sm leading-6 text-muted-foreground">{error}</p>
+                          </div>
                         </div>
                       )}
+
+                      {!file && (
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          {steps.map((step, index) => (
+                            <div key={step} className="rounded-2xl border border-border bg-card/70 p-4">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-background text-sm font-semibold text-foreground shadow-card">
+                                {index + 1}
+                              </div>
+                              <p className="mt-3 text-sm font-medium leading-6 text-foreground">{step}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 rounded-2xl border border-border bg-card/70 px-4 py-3 text-sm text-muted-foreground">
+                        <Shield className="h-4 w-4 shrink-0 text-accent-green" />
+                        Your file is used only for processing and download.
+                      </div>
                     </motion.div>
                   )}
 
@@ -355,20 +371,32 @@ const WordToPDFTool = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="py-14 text-center"
+                      className="py-12 text-center"
                     >
                       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-card shadow-card">
                         <Loader2 className="h-10 w-10 animate-spin text-accent-blue" />
                       </div>
-                      <p className="mt-6 text-lg font-semibold text-foreground">
-                        Converting your document...
-                      </p>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        This can take a moment depending on file size and network
-                        speed.
-                      </p>
+                      <p className="mt-6 text-lg font-semibold text-foreground">Converting your file…</p>
+                      <p className="mt-2 text-sm text-muted-foreground">Please don't close this tab.</p>
+                      <div className="mx-auto mt-6 h-1.5 max-w-sm overflow-hidden rounded-full bg-card">
+                        <motion.div
+                          className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple"
+                          animate={{ x: ["-100%", "300%"] }}
+                          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        disabled
+                        className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-2xl bg-foreground/60 px-5 py-3 text-sm font-semibold text-background"
+                      >
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Converting…
+                      </button>
                     </motion.div>
                   )}
+
+
 
                   {stage === "done" && result && (
                     <motion.div

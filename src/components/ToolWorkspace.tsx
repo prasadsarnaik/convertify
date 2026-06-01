@@ -138,23 +138,101 @@ const ToolWorkspace = ({ toolName, toolSlug, tagline }: { toolName: string; tool
           <div className="rounded-2xl border border-border bg-background shadow-stage p-8">
             <AnimatePresence mode="wait">
               {(stage === "upload" || stage === "error") && (
-                <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <div
-                    {...getRootProps()}
-                    className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
-                      isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                    }`}
-                  >
-                    <input {...getInputProps()} />
-                    <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                    <p className="font-semibold text-foreground">Drop files here or click to upload</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {config.accept || "All files"} supported
-                    </p>
-                  </div>
+                <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+                  {files.length === 0 ? (
+                    <div
+                      {...getRootProps()}
+                      className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-colors ${
+                        isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                      }`}
+                    >
+                      <input {...getInputProps()} />
+                      <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                      <p className="font-semibold text-foreground">Drop files here or click to upload</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {config.accept || "All files"} supported
+                      </p>
+                    </div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        boxShadow: [
+                          "0 0 0 0 hsl(var(--accent-green) / 0)",
+                          "0 0 0 12px hsl(var(--accent-green) / 0.18)",
+                          "0 0 0 0 hsl(var(--accent-green) / 0)",
+                        ],
+                      }}
+                      transition={{ duration: 0.7 }}
+                      className="rounded-xl border-2 border-accent-green/40 bg-accent-green/5 p-5 space-y-4"
+                    >
+                      <div className="flex items-center gap-3">
+                        <motion.div
+                          initial={{ scale: 0.5, rotate: -15 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                          className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-green/15 text-accent-green"
+                        >
+                          <CheckCircle className="h-6 w-6" />
+                        </motion.div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-accent-green">
+                            {files.length === 1 ? "File uploaded successfully" : `${files.length} files uploaded successfully`}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Ready to convert</p>
+                        </div>
+                        {config.multiple !== false && (
+                          <div {...getRootProps()} className="cursor-pointer">
+                            <input {...getInputProps()} />
+                            <span className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-card transition-colors">
+                              Add more
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-2 max-h-56 overflow-y-auto">
+                        {files.map((f) => (
+                          <div key={f.id} className="flex items-center gap-3 p-3 rounded-xl bg-background border border-border">
+                            <FileText className="w-5 h-5 text-accent-blue shrink-0" />
+                            <span className="text-sm text-foreground truncate flex-1">{f.file.name}</span>
+                            <span className="text-xs text-muted-foreground shrink-0">
+                              {f.file.size < 1024 * 1024
+                                ? `${(f.file.size / 1024).toFixed(0)} KB`
+                                : `${(f.file.size / (1024 * 1024)).toFixed(1)} MB`}
+                            </span>
+                            <button onClick={() => removeFile(f.id)} className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Remove file">
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {config.options && config.options.length > 0 && (
+                        <ToolOptions options={config.options} values={options} onChange={updateOption} />
+                      )}
+
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <button
+                          onClick={handleConvert}
+                          className="flex-1 py-3 rounded-xl bg-foreground text-background font-semibold text-sm hover:opacity-90 transition-opacity"
+                        >
+                          Convert {files.length} {files.length === 1 ? "file" : "files"}
+                        </button>
+                        <button
+                          onClick={handleReset}
+                          className="rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-card transition-colors"
+                        >
+                          {files.length === 1 ? "Change file" : "Clear"}
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
 
                   {stage === "error" && (
-                    <div className="mt-4 p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-start gap-3">
+                    <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-start gap-3">
                       <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
                       <div>
                         <p className="font-semibold text-sm text-foreground">Conversion failed</p>
@@ -162,46 +240,32 @@ const ToolWorkspace = ({ toolName, toolSlug, tagline }: { toolName: string; tool
                       </div>
                     </div>
                   )}
-
-                  {files.length > 0 && (
-                    <div className="mt-6 space-y-3">
-                      {files.map((f) => (
-                        <div key={f.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
-                          <FileText className="w-5 h-5 text-accent-blue shrink-0" />
-                          <span className="text-sm text-foreground truncate flex-1">{f.file.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {f.file.size < 1024 * 1024
-                              ? `${(f.file.size / 1024).toFixed(0)} KB`
-                              : `${(f.file.size / (1024 * 1024)).toFixed(1)} MB`}
-                          </span>
-                          <button onClick={() => removeFile(f.id)} className="text-muted-foreground hover:text-foreground transition-colors">
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-
-                      {config.options && config.options.length > 0 && (
-                        <ToolOptions options={config.options} values={options} onChange={updateOption} />
-                      )}
-
-                      <button
-                        onClick={handleConvert}
-                        className="w-full mt-4 py-3 rounded-xl bg-foreground text-background font-semibold text-sm hover:opacity-90 transition-opacity"
-                      >
-                        Convert {files.length} {files.length === 1 ? "file" : "files"}
-                      </button>
-                    </div>
-                  )}
                 </motion.div>
               )}
 
               {stage === "processing" && (
-                <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
+                <motion.div key="processing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="py-12 text-center">
                   <Loader2 className="w-10 h-10 text-accent-blue mx-auto mb-4 animate-spin" />
-                  <p className="font-semibold text-foreground">Processing your files…</p>
-                  <p className="text-sm text-muted-foreground mt-1">This may take a moment.</p>
+                  <p className="font-semibold text-foreground">Converting your file…</p>
+                  <p className="text-sm text-muted-foreground mt-1">Please don't close this tab.</p>
+                  <div className="mx-auto mt-6 h-1.5 max-w-sm overflow-hidden rounded-full bg-card">
+                    <motion.div
+                      className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple"
+                      animate={{ x: ["-100%", "300%"] }}
+                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    disabled
+                    className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-xl bg-foreground/60 px-5 py-3 text-sm font-semibold text-background"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Converting…
+                  </button>
                 </motion.div>
               )}
+
 
               {stage === "done" && (
                 <motion.div key="done" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="py-16 text-center">
