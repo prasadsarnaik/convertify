@@ -384,20 +384,35 @@ const PdfToWordTool = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="py-14 text-center"
+                      className="py-12 text-center"
                     >
                       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-card shadow-card">
                         <Loader2 className="h-10 w-10 animate-spin text-accent-blue" />
                       </div>
                       <p className="mt-6 text-lg font-semibold text-foreground">
-                        Converting your document...
+                        Converting your file…
                       </p>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        This can take a moment depending on file size and network
-                        speed.
+                        Please don't close this tab. This may take a moment.
                       </p>
+                      <div className="mx-auto mt-6 h-1.5 max-w-sm overflow-hidden rounded-full bg-card">
+                        <motion.div
+                          className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple"
+                          animate={{ x: ["-100%", "300%"] }}
+                          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        disabled
+                        className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-2xl bg-foreground/60 px-5 py-3 text-sm font-semibold text-background"
+                      >
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Converting…
+                      </button>
                     </motion.div>
                   )}
+
 
                   {stage === "done" && result && (
                     <motion.div
