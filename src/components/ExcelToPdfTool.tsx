@@ -400,26 +400,6 @@ const ExcelToPdfTool = () => {
                   )}
 
 
-                  {stage === "processing" && (
-                    <motion.div
-                      key="processing"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="py-14 text-center"
-                    >
-                      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-card shadow-card">
-                        <Loader2 className="h-10 w-10 animate-spin text-accent-blue" />
-                      </div>
-                      <p className="mt-6 text-lg font-semibold text-foreground">
-                        Converting your document...
-                      </p>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        This can take a moment depending on file size and network
-                        speed.
-                      </p>
-                    </motion.div>
-                  )}
 
                   {stage === "done" && result && (
                     <motion.div
