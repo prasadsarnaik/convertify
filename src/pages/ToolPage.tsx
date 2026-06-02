@@ -40,6 +40,7 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "protect-pdf": ProtectPdfWorkspace,
   "unlock-pdf": UnlockPdfWorkspace,
   "sign-pdf": SignPdfWorkspace,
+  "compress-image": CompressImageWorkspace,
 };
 
 const KNOWN_SLUGS = new Set([
