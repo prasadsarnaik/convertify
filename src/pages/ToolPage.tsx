@@ -17,6 +17,7 @@ import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
 import ExcelToPdfTool from "@/components/ExcelToPdfTool";
+import CompressImageWorkspace from "@/components/CompressImageWorkspace";
 import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
 import { getToolLongForm } from "@/lib/toolContentLong";
@@ -39,6 +40,7 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "protect-pdf": ProtectPdfWorkspace,
   "unlock-pdf": UnlockPdfWorkspace,
   "sign-pdf": SignPdfWorkspace,
+  "compress-image": CompressImageWorkspace,
 };
 
 const KNOWN_SLUGS = new Set([
