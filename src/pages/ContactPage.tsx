@@ -103,7 +103,7 @@ const ContactPage = () => {
           >
             <div className="inline-flex items-center gap-2 text-muted-foreground">
               <Mail className="w-4 h-4" />
-              <span className="text-sm">support@convertify.app</span>
+              <span className="text-sm">prasadsarnaik028@gmail.com</span>
             </div>
           </motion.div>
         </section>
