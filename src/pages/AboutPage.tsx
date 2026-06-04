@@ -108,9 +108,14 @@ const AboutPage = () => (
           >
             👨‍💻
           </motion.div>
-          <p className="text-sm text-muted-foreground mb-1">Built and designed by</p>
+          <p className="text-sm text-muted-foreground mb-1">Founder, Creator & Owner</p>
           <h3 className="text-xl font-bold text-foreground">Prasad Shivaji Sarnaik</h3>
-          <p className="text-sm text-muted-foreground mt-1">UI/UX Designer</p>
+          <p className="text-sm text-muted-foreground mt-1">UI/UX Designer & Independent Developer</p>
+          <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
+            Convertify is independently created, designed, owned and maintained by
+            Prasad Shivaji Sarnaik. Every tool is built and operated by a single founder
+            with a focus on privacy, speed and clean design.
+          </p>
         </motion.div>
       </section>
     </main>
