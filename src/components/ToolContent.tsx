@@ -65,7 +65,7 @@ const ToolContent = ({ meta }: { meta: ToolMeta }) => {
           ))}
         </ul>
 
-        <AdSlot label="Sponsored" />
+        <AdSlot slot="0000000000" label="Sponsored" />
 
         <h2 className="text-2xl font-bold text-foreground mb-4">Privacy &amp; security</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
