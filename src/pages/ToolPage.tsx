@@ -17,6 +17,7 @@ import SignPdfWorkspace from "@/components/SignPdfWorkspace";
 import WordToPDFTool from "@/components/WordToPDFTool";
 import PdfToWordTool from "@/components/PdfToWordTool";
 import ExcelToPdfTool from "@/components/ExcelToPdfTool";
+import PdfToExcelTool from "@/components/PdfToExcelTool";
 import CompressImageWorkspace from "@/components/CompressImageWorkspace";
 import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
@@ -29,6 +30,7 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "word-to-pdf": WordToPDFTool,
   "pdf-to-word": PdfToWordTool,
   "excel-to-pdf": ExcelToPdfTool,
+  "pdf-to-excel": PdfToExcelTool,
   "merge-pdf": MergePdfWorkspace,
   "edit-pdf": EditPdfWorkspace,
   "rotate-image": RotateImageWorkspace,

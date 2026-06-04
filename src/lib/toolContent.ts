@@ -202,6 +202,16 @@ export const TOOL_META: Record<string, ToolMeta> = {
     "Excel to PDF turns your spreadsheets into clean, paginated PDF tables with selectable text. Each sheet becomes its own section, perfect for sharing reports, invoices and data exports without exposing the raw workbook.",
     ["pdf-to-word", "word-to-pdf", "merge-pdf"],
   ),
+  "pdf-to-excel": make(
+    "pdf-to-excel",
+    "PDF to Excel",
+    "Convert PDF tables and documents into editable Excel spreadsheets",
+    "convert",
+    "Convert PDF files into editable Excel (XLSX) spreadsheets online — free, fast, and 100% private. Each PDF page becomes its own worksheet.",
+    ["pdf to excel", "pdf to xlsx", "convert pdf to spreadsheet", "extract tables from pdf", "pdf to excel online"],
+    "PDF to Excel extracts text and tables from your PDF and turns them into an editable .xlsx workbook with one sheet per page. Open the result in Microsoft Excel, Google Sheets or Apple Numbers and continue editing right away.",
+    ["excel-to-pdf", "pdf-to-word", "merge-pdf"],
+  ),
   "image-to-pdf": make(
     "image-to-pdf",
     "Image to PDF",
