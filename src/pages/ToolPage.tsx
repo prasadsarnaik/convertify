@@ -30,6 +30,7 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
   "word-to-pdf": WordToPDFTool,
   "pdf-to-word": PdfToWordTool,
   "excel-to-pdf": ExcelToPdfTool,
+  "pdf-to-excel": PdfToExcelTool,
   "merge-pdf": MergePdfWorkspace,
   "edit-pdf": EditPdfWorkspace,
   "rotate-image": RotateImageWorkspace,
