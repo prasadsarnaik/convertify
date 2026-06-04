@@ -12,9 +12,27 @@ const orgLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Convertify",
+  alternateName: "Convertify – Free Online File Converter",
   url: SITE,
   logo: `${SITE}/favicon.png`,
-  sameAs: [],
+  description:
+    "Convertify is a free, privacy-first online file converter for PDF, Word, JPG, PNG and more. All processing happens entirely in your browser.",
+  founder: {
+    "@type": "Person",
+    name: "Prasad Shivaji Sarnaik",
+    jobTitle: "Founder & UI/UX Designer",
+    url: `${SITE}/about`,
+    sameAs: [
+      "https://www.linkedin.com/in/prasad-shivaji-sarnaik",
+      "https://github.com/prasadsarnaik028",
+      "https://www.instagram.com/prasad_sarnaik028",
+    ],
+  },
+  sameAs: [
+    "https://www.linkedin.com/in/prasad-shivaji-sarnaik",
+    "https://github.com/prasadsarnaik028",
+    "https://www.instagram.com/prasad_sarnaik028",
+  ],
 };
 
 const websiteLd = {
@@ -22,6 +40,12 @@ const websiteLd = {
   "@type": "WebSite",
   name: "Convertify",
   url: SITE,
+  inLanguage: "en",
+  publisher: {
+    "@type": "Organization",
+    name: "Convertify",
+    founder: { "@type": "Person", name: "Prasad Shivaji Sarnaik" },
+  },
   potentialAction: {
     "@type": "SearchAction",
     target: `${SITE}/tools?q={search_term_string}`,
