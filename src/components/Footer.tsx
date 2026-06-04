@@ -81,7 +81,8 @@ const Footer = () => (
         ))}
       </div>
       <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Convertify — Convert Anything Instantly. All rights reserved.
+        © 2026 Convertify. Created and owned by{" "}
+        <span className="font-medium text-foreground">Prasad Shivaji Sarnaik</span>.
       </div>
     </div>
   </footer>
