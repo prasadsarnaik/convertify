@@ -56,10 +56,10 @@ const Footer = () => (
             Free online PDF and image tools that run entirely in your browser. No sign-up, no watermark, no upload.
           </p>
           <a
-            href="mailto:hello@convertify.app"
+            href="mailto:prasadsarnaik028@gmail.com"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <Mail className="w-4 h-4" /> hello@convertify.app
+            <Mail className="w-4 h-4" /> prasadsarnaik028@gmail.com
           </a>
         </div>
         {columns.map((col) => (
