@@ -7,43 +7,31 @@ const formats = [
     icon: FileText,
     label: "PDF",
     note: "Merge, split, compress, edit, sign, protect",
-    gradient: "from-rose-500 to-orange-400",
-    anim: { rotate: [0, -8, 8, -4, 0], scale: [1, 1.15, 1.05, 1.1, 1] },
   },
   {
     icon: FileText,
     label: "Word (DOCX)",
     note: "Convert to and from PDF",
-    gradient: "from-blue-500 to-indigo-500",
-    anim: { y: [0, -6, 0, -3, 0], scale: [1, 1.1, 1, 1.05, 1] },
   },
   {
     icon: ImageIcon,
     label: "JPG / PNG",
     note: "Convert, resize, compress, rotate",
-    gradient: "from-fuchsia-500 to-pink-500",
-    anim: { rotate: [0, 360], scale: [1, 1.1, 1] },
   },
   {
     icon: ImageIcon,
     label: "WebP / AVIF / HEIC",
     note: "Convert to JPG instantly",
-    gradient: "from-emerald-500 to-teal-500",
-    anim: { scale: [1, 1.2, 0.95, 1.1, 1] },
   },
   {
     icon: FileCheck2,
     label: "Image → PDF",
     note: "Bundle photos into one PDF",
-    gradient: "from-amber-500 to-yellow-400",
-    anim: { y: [0, -4, 4, -2, 0], rotate: [0, 5, -5, 0] },
   },
   {
     icon: Layers,
     label: "PDF → JPG",
     note: "Export pages as images",
-    gradient: "from-violet-500 to-purple-500",
-    anim: { y: [0, -5, 0], scale: [1, 1.08, 1] },
   },
 ];
 
@@ -109,7 +97,7 @@ const HomeContent = () => (
         Convertify covers the formats people actually use day-to-day — PDFs, Word documents and the most common image formats from phones, cameras and the web.
       </p>
       <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {formats.map(({ icon: Icon, label, note, gradient, anim }, i) => (
+        {formats.map(({ icon: Icon, label, note }, i) => (
           <motion.div
             key={label}
             initial={{ opacity: 0, y: 16 }}
@@ -119,14 +107,9 @@ const HomeContent = () => (
             whileHover={{ y: -4 }}
             className="group p-5 rounded-2xl border border-border bg-card relative overflow-hidden"
           >
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br ${gradient} transition-opacity duration-500 pointer-events-none`} />
-            <motion.div
-              className={`w-11 h-11 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-3 shadow-md`}
-              animate={anim}
-              transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
-            >
-              <Icon className="w-5 h-5 text-white" strokeWidth={2.2} />
-            </motion.div>
+            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-3">
+              <Icon className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.5} />
+            </div>
             <p className="font-semibold text-foreground">{label}</p>
             <p className="text-sm text-muted-foreground mt-1">{note}</p>
           </motion.div>
