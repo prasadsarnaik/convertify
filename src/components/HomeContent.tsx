@@ -3,12 +3,48 @@ import { ShieldCheck, Lock, Server, Eye, FileText, Image as ImageIcon, FileCheck
 import { Link } from "react-router-dom";
 
 const formats = [
-  { icon: FileText, label: "PDF", note: "Merge, split, compress, edit, sign, protect" },
-  { icon: FileText, label: "Word (DOCX)", note: "Convert to and from PDF" },
-  { icon: ImageIcon, label: "JPG / PNG", note: "Convert, resize, compress, rotate" },
-  { icon: ImageIcon, label: "WebP / AVIF / HEIC", note: "Convert to JPG instantly" },
-  { icon: FileCheck2, label: "Image → PDF", note: "Bundle photos into one PDF" },
-  { icon: Layers, label: "PDF → JPG", note: "Export pages as images" },
+  {
+    icon: FileText,
+    label: "PDF",
+    note: "Merge, split, compress, edit, sign, protect",
+    gradient: "from-rose-500 to-orange-400",
+    anim: { rotate: [0, -8, 8, -4, 0], scale: [1, 1.15, 1.05, 1.1, 1] },
+  },
+  {
+    icon: FileText,
+    label: "Word (DOCX)",
+    note: "Convert to and from PDF",
+    gradient: "from-blue-500 to-indigo-500",
+    anim: { y: [0, -6, 0, -3, 0], scale: [1, 1.1, 1, 1.05, 1] },
+  },
+  {
+    icon: ImageIcon,
+    label: "JPG / PNG",
+    note: "Convert, resize, compress, rotate",
+    gradient: "from-fuchsia-500 to-pink-500",
+    anim: { rotate: [0, 360], scale: [1, 1.1, 1] },
+  },
+  {
+    icon: ImageIcon,
+    label: "WebP / AVIF / HEIC",
+    note: "Convert to JPG instantly",
+    gradient: "from-emerald-500 to-teal-500",
+    anim: { scale: [1, 1.2, 0.95, 1.1, 1] },
+  },
+  {
+    icon: FileCheck2,
+    label: "Image → PDF",
+    note: "Bundle photos into one PDF",
+    gradient: "from-amber-500 to-yellow-400",
+    anim: { y: [0, -4, 4, -2, 0], rotate: [0, 5, -5, 0] },
+  },
+  {
+    icon: Layers,
+    label: "PDF → JPG",
+    note: "Export pages as images",
+    gradient: "from-violet-500 to-purple-500",
+    anim: { y: [0, -5, 0], scale: [1, 1.08, 1] },
+  },
 ];
 
 const benefits = [
