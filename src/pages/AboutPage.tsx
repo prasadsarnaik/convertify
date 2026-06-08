@@ -1,6 +1,6 @@
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
-import { Heart, Zap, Shield, Sparkles } from "lucide-react";
+import { Heart, Zap, Shield, Sparkles, Code2, Palette } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
