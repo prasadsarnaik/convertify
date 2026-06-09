@@ -6,7 +6,7 @@ import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import HomeContent, { homeFaqLd } from "@/components/HomeContent";
 import Footer from "@/components/Footer";
-import AdSlot from "@/components/AdSlot";
+
 
 const orgLd = {
   "@context": "https://schema.org",
@@ -64,7 +64,7 @@ const Index = () => (
     <Navbar />
     <main>
       <Hero />
-      <AdSlot slot="0000000000" />
+      
       <ToolsGrid />
       <Features />
       <HowItWorks />
