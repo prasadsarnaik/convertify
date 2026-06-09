@@ -64,7 +64,7 @@ const Index = () => (
     <Navbar />
     <main>
       <Hero />
-      <AdSlot slot="0000000000" />
+      
       <ToolsGrid />
       <Features />
       <HowItWorks />
