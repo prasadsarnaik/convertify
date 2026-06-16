@@ -47,11 +47,14 @@ const DEDICATED_WORKSPACES: Record<string, React.FC> = {
 
 const KNOWN_SLUGS = new Set([
   ...Object.keys(DEDICATED_WORKSPACES),
-  "split-pdf", "pdf-to-jpg", "jpg-to-png", "png-to-jpg",
-  "webp-to-jpg", "avif-to-jpg", "heic-to-jpg",
-  "resize-image", "compress-image",
-  "image-upscaler",
-  "rotate-image",
+  "split-pdf",
+  "pdf-to-jpg",
+  "jpg-to-png",
+  "png-to-jpg",
+  "webp-to-jpg",
+  "avif-to-jpg",
+  "heic-to-jpg",
+  "resize-image",
 ]);
 
 const ToolPage = () => {
