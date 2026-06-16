@@ -11,7 +11,7 @@ interface SEOProps {
   keywords?: string[];
 }
 
-export const SITE = "https://convertify.app";
+export const SITE = "https://convertifyall.com";
 const DEFAULT_OG = `${SITE}/og-image.png`;
 
 const SEO = ({

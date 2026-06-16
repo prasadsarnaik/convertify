@@ -1,4 +1,4 @@
-import SEO from "@/components/SEO";
+import SEO, { SITE } from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Upload, Settings, Download } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -12,9 +12,43 @@ const steps = [
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
-const HowItWorksPage = () => (
+const HowItWorksPage = () => {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+      { "@type": "ListItem", position: 2, name: "How It Works", item: `${SITE}/how-it-works` },
+    ],
+  };
+
+  const howToLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "How to Use Convertify",
+    description: "Learn how Convertify works in three simple steps — upload your file, choose a tool, and download the result instantly.",
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Upload Your File",
+        text: "Drag and drop or click to upload your files from any device.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Choose a Tool",
+        text: "Select the conversion or optimization you need from our tool library.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Download the Result",
+        text: "Get your processed file instantly — fast and secure.",
+      },
+    ],
+  };
+
+  return (
   <>
-    <SEO title="How It Works" description="Learn how Convertify works in three simple steps — upload your file, choose a tool, and download the result instantly." path="/how-it-works" />
+    <SEO title="How It Works" description="Learn how Convertify works in three simple steps — upload your file, choose a tool, and download the result instantly." path="/how-it-works" jsonLd={[breadcrumbLd, howToLd]} />
     <Navbar />
     <main className="pt-28 pb-20">
       <div className="container max-w-4xl mx-auto px-6">
@@ -51,5 +85,6 @@ const HowItWorksPage = () => (
     <Footer />
   </>
 );
+};
 
 export default HowItWorksPage;

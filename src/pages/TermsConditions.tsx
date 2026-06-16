@@ -14,8 +14,9 @@ const TermsConditions = () => {
   return (
     <>
       <SEO
-        title="Terms & Conditions | ConvertifyAll"
-        description="Read the Terms and Conditions for using ConvertifyAll's file conversion tools and services."
+        title="Terms & Conditions | Convertify"
+        description="Read the Terms and Conditions for using Convertify's file conversion tools and services."
+        path="/terms-and-conditions"
       />
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 bg-background">
@@ -43,7 +44,7 @@ const TermsConditions = () => {
               {/* Introduction */}
               <section>
                 <p className="text-foreground leading-relaxed">
-                  Welcome to <strong>ConvertifyAll</strong> (&quot;Company,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). These Terms and Conditions (&quot;Terms&quot;) govern your access to and use of our website located at <a href="https://convertifyall.com" className="text-blue-600 hover:underline">https://convertifyall.com</a> (the &quot;Website&quot;) and the file conversion, manipulation, and related services offered through the Website (collectively, the &quot;Services&quot;).
+                  Welcome to <strong>Convertify</strong> (&quot;Company,&quot; &quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). These Terms and Conditions (&quot;Terms&quot;) govern your access to and use of our website located at <a href="https://convertifyall.com" className="text-blue-600 hover:underline">https://convertifyall.com</a> (the &quot;Website&quot;) and the file conversion, manipulation, and related services offered through the Website (collectively, the &quot;Services&quot;).
                 </p>
                 <p className="text-foreground leading-relaxed mt-4">
                   By accessing or using our Website and Services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Services.

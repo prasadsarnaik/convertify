@@ -5,7 +5,7 @@ import { resolve } from "path";
 import { TOOL_META } from "../src/lib/toolContent";
 import { BLOG_POSTS } from "../src/lib/blogPosts";
 
-const BASE_URL = "https://convertify.app";
+const BASE_URL = "https://convertifyall.com";
 const today = new Date().toISOString().slice(0, 10);
 
 interface Entry {
@@ -23,6 +23,7 @@ const staticPages: Entry[] = [
   { path: "/about", changefreq: "monthly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/blog", changefreq: "weekly", priority: "0.8" },
+  { path: "/tool-status", changefreq: "daily", priority: "0.5" },
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.4" },
   { path: "/terms-and-conditions", changefreq: "yearly", priority: "0.4" },
   { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },

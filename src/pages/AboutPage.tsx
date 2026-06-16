@@ -1,4 +1,4 @@
-import SEO from "@/components/SEO";
+import SEO, { SITE } from "@/components/SEO";
 import { motion } from "framer-motion";
 import { Heart, Zap, Shield, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -13,9 +13,34 @@ const whyItems = [
 
 const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
-const AboutPage = () => (
+const AboutPage = () => {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+      { "@type": "ListItem", position: 2, name: "About", item: `${SITE}/about` },
+    ],
+  };
+
+  const organizationLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Convertify",
+    url: SITE,
+    logo: `${SITE}/favicon.png`,
+    description: "Convertify is a free, privacy-first online file converter for PDF, Word, JPG, PNG and more. All processing happens entirely in your browser.",
+    founder: {
+      "@type": "Person",
+      name: "Prasad Shivaji Sarnaik",
+      jobTitle: "Founder & UI/UX Designer",
+      url: `${SITE}/about`,
+    },
+  };
+
+  return (
   <>
-    <SEO title="About" description="Learn about Convertify — a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful." path="/about" />
+    <SEO title="About" description="Learn about Convertify — a modern file tools platform designed to make working with PDFs and images simple, fast and beautiful." path="/about" jsonLd={[breadcrumbLd, organizationLd]} />
     <Navbar />
     <main className="pt-28 pb-20">
       {/* Hero */}
@@ -195,5 +220,6 @@ const AboutPage = () => (
     <Footer />
   </>
 );
+};
 
 export default AboutPage;

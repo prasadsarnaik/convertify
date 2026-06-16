@@ -14,8 +14,9 @@ const PrivacyPolicy = () => {
   return (
     <>
       <SEO
-        title="Privacy Policy | ConvertifyAll"
-        description="Learn how ConvertifyAll protects your privacy and handles your data. We don't store your files permanently."
+        title="Privacy Policy | Convertify"
+        description="Learn how Convertify protects your privacy and handles your data. We don't store your files permanently."
+        path="/privacy-policy"
       />
       <Navbar />
       <main className="min-h-screen pt-28 pb-20 bg-background">
@@ -43,10 +44,10 @@ const PrivacyPolicy = () => {
               {/* Introduction */}
               <section>
                 <p className="text-foreground leading-relaxed">
-                  At <strong>ConvertifyAll</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;), we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website <a href="https://convertifyall.com" className="text-blue-600 hover:underline">https://convertifyall.com</a> and use our online file conversion and manipulation tools.
+                  At <strong>Convertify</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;), we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website <a href="https://convertifyall.com" className="text-blue-600 hover:underline">https://convertifyall.com</a> and use our online file conversion and manipulation tools.
                 </p>
                 <p className="text-foreground leading-relaxed mt-4">
-                  By accessing or using ConvertifyAll, you agree to the terms of this Privacy Policy. If you do not agree with our policies and practices, please do not use our services.
+                  By accessing or using Convertify, you agree to the terms of this Privacy Policy. If you do not agree with our policies and practices, please do not use our services.
                 </p>
               </section>
 

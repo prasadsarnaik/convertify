@@ -7,7 +7,7 @@ import { resolve, dirname } from "path";
 import { TOOL_META } from "../src/lib/toolContent";
 import { BLOG_POSTS } from "../src/lib/blogPosts";
 
-const SITE = "https://convertify.app";
+const SITE = "https://convertifyall.com";
 const DIST = resolve("dist");
 const INDEX = resolve(DIST, "index.html");
 
@@ -94,6 +94,7 @@ const staticRoutes: Route[] = [
   { path: "/about", title: "About Convertify", description: "Convertify is a free, privacy-first online file converter that runs entirely in your browser.", h1: "About Convertify" },
   { path: "/contact", title: "Contact Convertify", description: "Get in touch with the Convertify team for support, feedback or partnership enquiries.", h1: "Contact Us" },
   { path: "/blog", title: "Blog — PDF & File Conversion Guides", description: "Tutorials and guides on converting, compressing and managing PDFs and images.", h1: "Convertify Blog" },
+  { path: "/tool-status", title: "Tool Status — Convertify", description: "Check the operational status of all Convertify tools and services.", h1: "Tool Status" },
   { path: "/privacy-policy", title: "Privacy Policy", description: "How Convertify handles your data — spoiler: your files never leave your device.", h1: "Privacy Policy" },
   { path: "/terms-and-conditions", title: "Terms & Conditions", description: "The terms that govern your use of Convertify.", h1: "Terms & Conditions" },
   { path: "/disclaimer", title: "Disclaimer", description: "Important information about using Convertify.", h1: "Disclaimer" },
