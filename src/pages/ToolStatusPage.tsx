@@ -104,9 +104,8 @@ const ToolStatusPage = () => {
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
-                    filter === f ? "bg-foreground text-background" : "bg-card border border-border text-foreground hover:bg-muted"
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${filter === f ? "bg-foreground text-background" : "bg-card border border-border text-foreground hover:bg-muted"
+                    }`}
                 >
                   {f === "all" ? "All" : f} {f === "all" ? `(${tools.length})` : `(${tools.filter((t) => t.category === f).length})`}
                 </button>
