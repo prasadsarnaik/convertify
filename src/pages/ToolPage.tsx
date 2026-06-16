@@ -50,6 +50,8 @@ const KNOWN_SLUGS = new Set([
   "split-pdf", "pdf-to-jpg", "jpg-to-png", "png-to-jpg",
   "webp-to-jpg", "avif-to-jpg", "heic-to-jpg",
   "resize-image", "compress-image",
+  "image-upscaler",
+  "rotate-image",
 ]);
 
 const ToolPage = () => {
