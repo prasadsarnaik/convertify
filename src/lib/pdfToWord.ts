@@ -3,7 +3,7 @@
 // Preserves bold, italic, font sizes, headings, and paragraph grouping.
 
 import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
+import pdfWorker from "pdfjs-dist/build/pdf.worker?url";
 import {
   Document,
   Packer,

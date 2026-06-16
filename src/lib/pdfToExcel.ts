@@ -3,7 +3,7 @@
 // rows into columns using x-gap clustering. Each PDF page becomes one sheet.
 
 import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
+import pdfWorker from "pdfjs-dist/build/pdf.worker?url";
 import * as XLSX from "xlsx";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -73,7 +73,7 @@ function splitRowIntoColumns(row: TextItemPos[]): string[] {
   if (row.length === 0) return [];
   const avgChar =
     row.reduce((acc, it) => acc + (it.text.length > 0 ? it.w / it.text.length : 0), 0) /
-      row.length || 4;
+    row.length || 4;
   const threshold = avgChar * COL_GAP_RATIO * 2; // a meaningful gap
   const cells: string[] = [];
   let current = row[0].text;
