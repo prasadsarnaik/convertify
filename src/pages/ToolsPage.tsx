@@ -6,8 +6,8 @@ import ToolsGrid from "@/components/ToolsGrid";
 const ToolsPage = () => (
   <>
     <SEO
-      title="All Tools — Free Online PDF & Image Tools"
-      description="Browse every Convertify tool: convert, merge, split, compress, edit and sign PDFs, plus image format converters and editors."
+      title="All Tools — Free PDF, Word & Image Converters"
+      description="Browse every Convertify tool: convert, merge, split, compress, edit and sign PDFs, plus Word, spreadsheet and image converters."
       path="/tools"
     />
     <Navbar />

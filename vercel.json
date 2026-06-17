@@ -11,6 +11,13 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/tool/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]

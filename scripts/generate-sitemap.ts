@@ -13,6 +13,7 @@ interface Entry {
   lastmod?: string;
   changefreq?: string;
   priority?: string;
+  noindex?: boolean;
 }
 
 const staticPages: Entry[] = [
@@ -23,7 +24,6 @@ const staticPages: Entry[] = [
   { path: "/about", changefreq: "monthly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.6" },
   { path: "/blog", changefreq: "weekly", priority: "0.8" },
-  { path: "/tool-status", changefreq: "daily", priority: "0.5" },
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.4" },
   { path: "/terms-and-conditions", changefreq: "yearly", priority: "0.4" },
   { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },
@@ -48,7 +48,7 @@ const blogPages: Entry[] = BLOG_POSTS.map((post) => ({
 const entries = [...staticPages, ...toolPages, ...blogPages].map((e) => ({
   lastmod: today,
   ...e,
-}));
+})).filter((e) => !e.noindex);
 
 const xml = [
   `<?xml version="1.0" encoding="UTF-8"?>`,

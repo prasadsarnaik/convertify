@@ -46,8 +46,10 @@ const ToolsGrid = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-14"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-foreground">Every tool you need</h2>
-          <p className="mt-4 text-muted-foreground text-lg">PDF &amp; image tools, all in one place.</p>
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground">Free PDF, Word &amp; image tools</h2>
+          <p className="mt-4 text-muted-foreground text-lg max-w-2xl mx-auto">
+            Convert, merge, split, compress and edit files online with browser-based tools for PDFs, documents and images.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">

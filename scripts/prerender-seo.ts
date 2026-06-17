@@ -24,6 +24,8 @@ interface Route {
   description: string;
   h1: string;
   keywords?: string[];
+  type?: string;
+  noindex?: boolean;
   jsonLd?: object[];
 }
 
@@ -53,6 +55,7 @@ const toolRoutes: Route[] = Object.values(TOOL_META).map((m) => ({
   title: `${m.name} — ${m.tagline} | Free Online Tool`,
   description: m.description,
   h1: `${m.name} — ${m.tagline}`,
+  type: "website",
   keywords: m.keywords,
   jsonLd: [
     breadcrumb(m.name, `/${m.slug}`),
@@ -74,6 +77,7 @@ const blogRoutes: Route[] = BLOG_POSTS.map((p) => ({
   title: `${p.title} | Convertify Blog`,
   description: p.description,
   h1: p.title,
+  type: "article",
   keywords: p.tags,
   jsonLd: [
     {
@@ -88,18 +92,18 @@ const blogRoutes: Route[] = BLOG_POSTS.map((p) => ({
 }));
 
 const staticRoutes: Route[] = [
-  { path: "/tools", title: "All Tools — Free Online PDF & Image Tools", description: "Browse every Convertify tool: convert, merge, split, compress, edit and sign PDFs, plus image format converters and editors.", h1: "All Convertify Tools" },
-  { path: "/features", title: "Features — Why Convertify", description: "Browser-based, private, free file tools. No uploads, no watermarks, no sign-up required.", h1: "Convertify Features" },
-  { path: "/how-it-works", title: "How It Works — Convertify", description: "See how Convertify processes files entirely in your browser using modern web technology.", h1: "How Convertify Works" },
-  { path: "/about", title: "About Convertify", description: "Convertify is a free, privacy-first online file converter that runs entirely in your browser.", h1: "About Convertify" },
-  { path: "/contact", title: "Contact Convertify", description: "Get in touch with the Convertify team for support, feedback or partnership enquiries.", h1: "Contact Us" },
-  { path: "/blog", title: "Blog — PDF & File Conversion Guides", description: "Tutorials and guides on converting, compressing and managing PDFs and images.", h1: "Convertify Blog" },
-  { path: "/tool-status", title: "Tool Status — Convertify", description: "Check the operational status of all Convertify tools and services.", h1: "Tool Status" },
-  { path: "/privacy-policy", title: "Privacy Policy", description: "How Convertify handles your data — spoiler: your files never leave your device.", h1: "Privacy Policy" },
-  { path: "/terms-and-conditions", title: "Terms & Conditions", description: "The terms that govern your use of Convertify.", h1: "Terms & Conditions" },
-  { path: "/disclaimer", title: "Disclaimer", description: "Important information about using Convertify.", h1: "Disclaimer" },
-  { path: "/dmca", title: "DMCA Policy", description: "Convertify's DMCA takedown policy.", h1: "DMCA Policy" },
-  { path: "/cookie-policy", title: "Cookie Policy", description: "How Convertify uses cookies.", h1: "Cookie Policy" },
+  { path: "/tools", title: "All Tools — Free Online PDF & Image Tools", description: "Browse every Convertify tool: convert, merge, split, compress, edit and sign PDFs, plus image format converters and editors.", h1: "All Convertify Tools", type: "website" },
+  { path: "/features", title: "Features — Why Convertify", description: "Browser-based, private, free file tools. No uploads, no watermarks, no sign-up required.", h1: "Convertify Features", type: "website" },
+  { path: "/how-it-works", title: "How It Works — Convertify", description: "See how Convertify processes files entirely in your browser using modern web technology.", h1: "How Convertify Works", type: "website" },
+  { path: "/about", title: "About Convertify", description: "Convertify is a free, privacy-first online file converter that runs entirely in your browser.", h1: "About Convertify", type: "website" },
+  { path: "/contact", title: "Contact Convertify", description: "Get in touch with the Convertify team for support, feedback or partnership enquiries.", h1: "Contact Us", type: "website" },
+  { path: "/blog", title: "Blog — PDF & File Conversion Guides", description: "Tutorials and guides on converting, compressing and managing PDFs and images.", h1: "Convertify Blog", type: "website" },
+  { path: "/tool-status", title: "Tool Status — Convertify", description: "Check the operational status of all Convertify tools and services.", h1: "Tool Status", type: "website", noindex: true },
+  { path: "/privacy-policy", title: "Privacy Policy", description: "How Convertify handles your data — spoiler: your files never leave your device.", h1: "Privacy Policy", type: "website" },
+  { path: "/terms-and-conditions", title: "Terms & Conditions", description: "The terms that govern your use of Convertify.", h1: "Terms & Conditions", type: "website" },
+  { path: "/disclaimer", title: "Disclaimer", description: "Important information about using Convertify.", h1: "Disclaimer", type: "website" },
+  { path: "/dmca", title: "DMCA Policy", description: "Convertify's DMCA takedown policy.", h1: "DMCA Policy", type: "website" },
+  { path: "/cookie-policy", title: "Cookie Policy", description: "How Convertify uses cookies.", h1: "Cookie Policy", type: "website" },
 ];
 
 const routes: Route[] = [...staticRoutes, ...toolRoutes, ...blogRoutes];
@@ -109,15 +113,20 @@ const escapeHtml = (s: string) =>
 
 function buildHead(r: Route) {
   const url = `${SITE}${r.path}`;
+  const robots = r.noindex
+    ? "noindex, nofollow"
+    : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
   const tags: string[] = [];
   tags.push(`<title>${escapeHtml(r.title)}</title>`);
   tags.push(`<meta name="description" content="${escapeHtml(r.description)}" />`);
+  tags.push(`<meta name="author" content="Prasad Shivaji Sarnaik" />`);
   if (r.keywords?.length) tags.push(`<meta name="keywords" content="${escapeHtml(r.keywords.join(", "))}" />`);
+  tags.push(`<meta name="robots" content="${robots}" />`);
   tags.push(`<link rel="canonical" href="${url}" />`);
   tags.push(`<meta property="og:title" content="${escapeHtml(r.title)}" />`);
   tags.push(`<meta property="og:description" content="${escapeHtml(r.description)}" />`);
   tags.push(`<meta property="og:url" content="${url}" />`);
-  tags.push(`<meta property="og:type" content="website" />`);
+  tags.push(`<meta property="og:type" content="${r.type ?? "website"}" />`);
   tags.push(`<meta name="twitter:card" content="summary_large_image" />`);
   tags.push(`<meta name="twitter:title" content="${escapeHtml(r.title)}" />`);
   tags.push(`<meta name="twitter:description" content="${escapeHtml(r.description)}" />`);

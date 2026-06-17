@@ -5,8 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const features = [
-  { icon: Zap, title: "Lightning Fast", desc: "Convertify processes files quickly using optimized cloud tools.", color: "from-accent-orange to-accent-pink" },
-  { icon: Shield, title: "Secure Processing", desc: "Files are automatically deleted after processing.", color: "from-accent-green to-accent-blue" },
+  { icon: Zap, title: "Lightning Fast", desc: "Convertify processes files quickly in your browser using optimized client-side tools.", color: "from-accent-orange to-accent-pink" },
+  { icon: Shield, title: "Secure Processing", desc: "Files stay on your device and are never uploaded to a server.", color: "from-accent-green to-accent-blue" },
   { icon: Layers, title: "Batch Conversion", desc: "Convert multiple files at once.", color: "from-accent-purple to-accent-pink" },
   { icon: Smartphone, title: "Mobile Friendly", desc: "Works beautifully on mobile, tablet and desktop.", color: "from-accent-blue to-accent-purple" },
 ];
@@ -25,7 +25,7 @@ const FeaturesPage = () => {
 
   return (
   <>
-    <SEO title="Features" description="Discover Convertify's powerful features — lightning fast processing, secure file handling, batch conversion, and mobile-friendly design." path="/features" jsonLd={breadcrumbLd} />
+    <SEO title="Features" description="Discover Convertify's features: browser-based processing, private file handling, batch conversion and mobile-friendly design." path="/features" jsonLd={breadcrumbLd} />
     <Navbar />
     <main className="pt-28 pb-20">
       <div className="container max-w-5xl mx-auto px-6">
