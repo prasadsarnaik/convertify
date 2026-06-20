@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ShieldCheck, Lock, Server, Eye, FileText, Image as ImageIcon, FileCheck2, Layers, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import AdSlot from "@/components/AdSlot";
 
 const formats = [
   {
@@ -116,6 +117,8 @@ const HomeContent = () => (
         ))}
       </div>
     </section>
+
+    <AdSlot placement="inContent" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
 
     {/* Privacy */}
     <section className="container max-w-3xl mx-auto px-6 py-20 border-t border-border">

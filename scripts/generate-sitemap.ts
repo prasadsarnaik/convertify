@@ -4,8 +4,8 @@ import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { TOOL_META } from "../src/lib/toolContent";
 import { BLOG_POSTS } from "../src/lib/blogPosts";
+import { SITE_URL } from "../src/config/site";
 
-const BASE_URL = "https://convertifyall.com";
 const today = new Date().toISOString().slice(0, 10);
 
 interface Entry {
@@ -56,7 +56,7 @@ const xml = [
   ...entries.map((e) =>
     [
       `  <url>`,
-      `    <loc>${BASE_URL}${e.path}</loc>`,
+      `    <loc>${SITE_URL}${e.path}</loc>`,
       e.lastmod && `    <lastmod>${e.lastmod}</lastmod>`,
       e.changefreq && `    <changefreq>${e.changefreq}</changefreq>`,
       e.priority && `    <priority>${e.priority}</priority>`,

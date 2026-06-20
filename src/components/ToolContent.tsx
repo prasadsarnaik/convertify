@@ -4,6 +4,7 @@ import { CheckCircle2, ShieldCheck, Zap, Lock, Sparkles } from "lucide-react";
 import type { ToolMeta } from "@/lib/toolContent";
 import { getToolMeta } from "@/lib/toolContent";
 import { getToolLongForm } from "@/lib/toolContentLong";
+import AdSlot from "@/components/AdSlot";
 
 
 const fade = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
@@ -34,6 +35,8 @@ const ToolContent = ({ meta }: { meta: ToolMeta }) => {
             </li>
           ))}
         </ol>
+
+        <AdSlot placement="inContent" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
 
         <h2 className="text-2xl font-bold text-foreground mb-4">Key features</h2>
         <ul className="grid sm:grid-cols-2 gap-3 mb-10">

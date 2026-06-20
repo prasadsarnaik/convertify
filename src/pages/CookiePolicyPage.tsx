@@ -14,7 +14,7 @@ const CookiePolicyPage = () => (
       <article className="container max-w-3xl mx-auto px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Cookie Policy</h1>
         <p className="text-muted-foreground leading-relaxed mb-5">
-          This Cookie Policy explains what cookies are, how Convertify uses them, the types of cookies we use and how you can control your preferences. It applies to the Convertify website at convertify.app.
+          This Cookie Policy explains what cookies are, how Convertify uses them, the types of cookies we use and how you can control your preferences. It applies to the Convertify website at convertifyall.com.
         </p>
 
         <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">What are cookies?</h2>
@@ -49,7 +49,7 @@ const CookiePolicyPage = () => (
 
         <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Contact</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Questions about this policy? Email <a className="underline" href="mailto:hello@convertify.app">hello@convertify.app</a>.
+          Questions about this policy? Email <a className="underline" href="mailto:hello@convertifyall.com">hello@convertifyall.com</a>.
         </p>
       </article>
     </main>

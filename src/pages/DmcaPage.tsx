@@ -37,7 +37,7 @@ const DmcaPage = () => (
 
         <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Designated agent</h2>
         <p className="text-muted-foreground leading-relaxed mb-5">
-          Send notices to: <a href="mailto:dmca@convertify.app" className="underline">dmca@convertify.app</a>. We aim to acknowledge complete notices within 5 business days and act on them where appropriate.
+          Send notices to: <a href="mailto:dmca@convertifyall.com" className="underline">dmca@convertifyall.com</a>. We aim to acknowledge complete notices within 5 business days and act on them where appropriate.
         </p>
 
         <h2 className="text-2xl font-bold text-foreground mt-10 mb-4">Counter-notice</h2>

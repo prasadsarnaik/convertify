@@ -6,8 +6,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { TOOL_META } from "../src/lib/toolContent";
 import { BLOG_POSTS } from "../src/lib/blogPosts";
+import { SITE_AUTHOR, SITE_NAME, SITE_OG_IMAGE, SITE_URL } from "../src/config/site";
 
-const SITE = "https://convertifyall.com";
 const DIST = resolve("dist");
 const INDEX = resolve(DIST, "index.html");
 
@@ -33,16 +33,16 @@ const breadcrumb = (name: string, path: string) => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-    { "@type": "ListItem", position: 2, name: "Tools", item: `${SITE}/tools` },
-    { "@type": "ListItem", position: 3, name, item: `${SITE}${path}` },
+    { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+    { "@type": "ListItem", position: 2, name: "Tools", item: `${SITE_URL}/tools` },
+    { "@type": "ListItem", position: 3, name, item: `${SITE_URL}${path}` },
   ],
 });
 
 const softwareLd = (name: string, description: string) => ({
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: `${name} — Convertify`,
+  name: `${name} — ${SITE_NAME}`,
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web Browser",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -86,7 +86,7 @@ const blogRoutes: Route[] = BLOG_POSTS.map((p) => ({
       headline: p.title,
       description: p.description,
       datePublished: p.date,
-      author: { "@type": "Organization", name: "Convertify" },
+      author: { "@type": "Organization", name: SITE_NAME },
     },
   ],
 }));
@@ -112,14 +112,16 @@ const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 function buildHead(r: Route) {
-  const url = `${SITE}${r.path}`;
+  const url = `${SITE_URL}${r.path}`;
   const robots = r.noindex
     ? "noindex, nofollow"
     : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
   const tags: string[] = [];
   tags.push(`<title>${escapeHtml(r.title)}</title>`);
   tags.push(`<meta name="description" content="${escapeHtml(r.description)}" />`);
-  tags.push(`<meta name="author" content="Prasad Shivaji Sarnaik" />`);
+  tags.push(`<meta name="author" content="${SITE_AUTHOR}" />`);
+  tags.push(`<meta name="application-name" content="${SITE_NAME}" />`);
+  tags.push(`<meta name="apple-mobile-web-app-title" content="${SITE_NAME}" />`);
   if (r.keywords?.length) tags.push(`<meta name="keywords" content="${escapeHtml(r.keywords.join(", "))}" />`);
   tags.push(`<meta name="robots" content="${robots}" />`);
   tags.push(`<link rel="canonical" href="${url}" />`);
@@ -130,6 +132,12 @@ function buildHead(r: Route) {
   tags.push(`<meta name="twitter:card" content="summary_large_image" />`);
   tags.push(`<meta name="twitter:title" content="${escapeHtml(r.title)}" />`);
   tags.push(`<meta name="twitter:description" content="${escapeHtml(r.description)}" />`);
+  tags.push(`<meta property="og:image" content="${SITE_OG_IMAGE}" />`);
+  tags.push(`<meta property="og:image:width" content="1200" />`);
+  tags.push(`<meta property="og:image:height" content="630" />`);
+  tags.push(`<meta property="og:image:alt" content="${escapeHtml(r.title)}" />`);
+  tags.push(`<meta name="twitter:image" content="${SITE_OG_IMAGE}" />`);
+  tags.push(`<meta name="twitter:image:alt" content="${escapeHtml(r.title)}" />`);
   if (r.jsonLd?.length) {
     for (const ld of r.jsonLd) {
       tags.push(`<script type="application/ld+json">${JSON.stringify(ld)}</script>`);
@@ -144,17 +152,17 @@ function buildNoscript(r: Route) {
 
 function prerender(r: Route) {
   let html = baseHtml;
-  // Strip existing title and the per-route meta tags that index.html ships with.
   html = html.replace(/<title>[\s\S]*?<\/title>/, "");
   html = html.replace(/<meta name="description"[^>]*>/g, "");
+  html = html.replace(/<meta name="application-name"[^>]*>/g, "");
+  html = html.replace(/<meta name="apple-mobile-web-app-title"[^>]*>/g, "");
   html = html.replace(/<meta name="keywords"[^>]*>/g, "");
   html = html.replace(/<link rel="canonical"[^>]*>/g, "");
   html = html.replace(/<meta property="og:(title|description|url|type)"[^>]*>/g, "");
-  html = html.replace(/<meta name="twitter:(card|title|description)"[^>]*>/g, "");
+  html = html.replace(/<meta property="og:image(?::(width|height|alt))?"[^>]*>/g, "");
+  html = html.replace(/<meta name="twitter:(card|title|description|image|image:alt)"[^>]*>/g, "");
 
-  // Inject route-specific head tags before </head>.
   html = html.replace("</head>", `    ${buildHead(r)}\n  </head>`);
-  // Add a noscript H1 + description right inside #root so crawlers see content.
   html = html.replace(
     '<div id="root"></div>',
     `<div id="root">${buildNoscript(r)}</div>`,

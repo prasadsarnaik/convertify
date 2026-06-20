@@ -1,7 +1,7 @@
-import SEO, { SITE } from "@/components/SEO";
+import SEO from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Send, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,7 @@ const fade = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
   };
@@ -81,7 +81,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Message</label>
-                    <Textarea placeholder="Your message…" required rows={5} className="rounded-xl" />
+                    <Textarea placeholder="Your message..." required rows={5} className="rounded-xl" />
                   </div>
                   <Button type="submit" className="w-full rounded-full gap-2">
                     <Send className="w-4 h-4" /> Send Message

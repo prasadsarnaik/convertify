@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail } from "lucide-react";
 import convertifyLogo from "@/assets/convertify-logo.png";
+import AdSlot from "@/components/AdSlot";
 
 const columns = [
   {
@@ -47,6 +48,13 @@ const columns = [
 const Footer = () => (
   <footer className="border-t border-border bg-card py-14">
     <div className="container max-w-6xl mx-auto px-6">
+      <AdSlot
+        placement="footer"
+        variant="compact"
+        className="mb-10"
+        label="Sponsored"
+        style={{ minHeight: "90px" }}
+      />
       <div className="grid md:grid-cols-[1.4fr_repeat(4,1fr)] gap-10 mb-12">
         <div>
           <Link to="/" className="inline-flex items-center gap-2 mb-4">

@@ -125,7 +125,7 @@ const ToolWorkspace = ({ toolName, toolSlug, tagline }: { toolName: string; tool
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20">
+    <div className="min-h-[calc(100vh-7rem)] pb-20">
       <div className="container max-w-2xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

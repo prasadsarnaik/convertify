@@ -80,11 +80,11 @@ Use this checklist before and after launching Convertify to confirm the site is 
 - [ ] Replace `REPLACE_WITH_YOUR_CODE` in `index.html` (`<meta name="google-site-verification">`) with the code from Google Search Console.
 - [ ] Verify the property in [Google Search Console](https://search.google.com/search-console) (HTML tag method).
 - [ ] Add and verify the property in [Bing Webmaster Tools](https://www.bing.com/webmasters) (optional but recommended).
-- [ ] Confirm the canonical domain (`https://convertify.app`) matches the deployed domain — update `SITE` in `src/components/SEO.tsx` and URLs in `public/sitemap.xml` if it changes.
+- [ ] Confirm the canonical domain (`https://convertifyall.com`) matches the deployed domain — update `src/config/site.ts` if it changes.
 - [ ] Ensure HTTPS is active and `http://` redirects to `https://`.
 
 ### 2. Indexing & Crawlability
-- [ ] Submit `https://convertify.app/sitemap.xml` under **Search Console → Sitemaps**.
+- [ ] Submit `https://convertifyall.com/sitemap.xml` under **Search Console → Sitemaps**.
 - [ ] Confirm `public/robots.txt` allows crawling (`Allow: /`) and references the sitemap.
 - [ ] Use Search Console **URL Inspection** on the homepage and 2–3 tool pages → click **Request Indexing**.
 - [ ] After 3–7 days, check **Coverage / Pages** report for indexed vs. excluded URLs.

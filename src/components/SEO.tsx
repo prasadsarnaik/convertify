@@ -1,4 +1,11 @@
 import { Helmet } from "react-helmet-async";
+import {
+  SITE_AUTHOR,
+  SITE_NAME,
+  SITE_OG_IMAGE,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/config/site";
 
 interface SEOProps {
   title: string;
@@ -11,21 +18,21 @@ interface SEOProps {
   keywords?: string[];
 }
 
-export const SITE = "https://convertifyall.com";
-const DEFAULT_OG = `${SITE}/og-image.png`;
+const IMAGE_WIDTH = 1200;
+const IMAGE_HEIGHT = 630;
 
 const SEO = ({
   title,
   description,
   path = "/",
   type = "website",
-  image = DEFAULT_OG,
+  image = SITE_OG_IMAGE,
   jsonLd,
   noindex,
   keywords,
 }: SEOProps) => {
-  const url = `${SITE}${path}`;
-  const full = `${title} — Convertify`;
+  const url = `${SITE_URL}${path}`;
+  const full = `${title} — ${SITE_TITLE}`;
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   const robots = noindex
     ? "noindex, nofollow"
@@ -35,7 +42,9 @@ const SEO = ({
     <Helmet>
       <title>{full}</title>
       <meta name="description" content={description} />
-      <meta name="author" content="Prasad Shivaji Sarnaik" />
+      <meta name="author" content={SITE_AUTHOR} />
+      <meta name="application-name" content={SITE_NAME} />
+      <meta name="apple-mobile-web-app-title" content={SITE_NAME} />
       {keywords && keywords.length > 0 && (
         <meta name="keywords" content={keywords.join(", ")} />
       )}
@@ -45,8 +54,10 @@ const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
-      <meta property="og:site_name" content="Convertify" />
+      <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:width" content={String(IMAGE_WIDTH)} />
+      <meta property="og:image:height" content={String(IMAGE_HEIGHT)} />
       <meta property="og:image:alt" content={title} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={full} />

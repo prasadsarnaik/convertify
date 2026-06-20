@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import SEO, { SITE } from "@/components/SEO";
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import NotFound from "./NotFound";
 import { getPost, BLOG_POSTS } from "@/lib/blogPosts";
 import { getToolMeta } from "@/lib/toolContent";
+import { SITE_NAME, SITE_URL } from "@/config/site";
 
 const renderBody = (body: string) =>
   body.split(/\n\n+/).map((block, i) => {
@@ -47,17 +49,17 @@ const BlogPostPage = () => {
     description: post.description,
     datePublished: post.date,
     dateModified: post.date,
-    author: { "@type": "Organization", name: "Convertify" },
-    publisher: { "@type": "Organization", name: "Convertify", logo: { "@type": "ImageObject", url: `${SITE}/favicon.png` } },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}${path}` },
+    author: { "@type": "Organization", name: SITE_NAME },
+    publisher: { "@type": "Organization", name: SITE_NAME, logo: { "@type": "ImageObject", url: `${SITE_URL}/favicon.png` } },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}${path}` },
   };
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
-      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
-      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE}${path}` },
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${SITE_URL}${path}` },
     ],
   };
   const faqLd = post.faqs.length && {
@@ -88,6 +90,8 @@ const BlogPostPage = () => {
           </motion.header>
 
           <div>{renderBody(post.body)}</div>
+
+          <AdSlot placement="inContent" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
 
           {post.faqs.length > 0 && (
             <>

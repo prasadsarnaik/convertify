@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predev": "bunx tsx scripts/generate-sitemap.ts",
+    "predev": "bunx tsx scripts/sync-index-html.ts && bunx tsx scripts/generate-sitemap.ts",
     "dev": "vite",
-    "prebuild": "bunx tsx scripts/generate-sitemap.ts",
+    "prebuild": "bunx tsx scripts/sync-index-html.ts && bunx tsx scripts/generate-sitemap.ts",
     "build": "vite build",
     "postbuild": "bunx tsx scripts/prerender-seo.ts",
     "build:dev": "vite build --mode development && bunx tsx scripts/prerender-seo.ts",

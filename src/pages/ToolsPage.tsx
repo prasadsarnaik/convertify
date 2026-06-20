@@ -1,6 +1,7 @@
 import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import ToolsGrid from "@/components/ToolsGrid";
 
 const ToolsPage = () => (
@@ -12,6 +13,7 @@ const ToolsPage = () => (
     />
     <Navbar />
     <main className="min-h-screen">
+      <AdSlot placement="header" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
       <ToolsGrid />
     </main>
     <Footer />

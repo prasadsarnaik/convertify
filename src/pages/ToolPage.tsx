@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import SEO, { SITE } from "@/components/SEO";
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import ToolWorkspace from "@/components/ToolWorkspace";
 import ToolContent from "@/components/ToolContent";
 import EditPdfWorkspace from "@/components/EditPdfWorkspace";
@@ -22,6 +23,7 @@ import CompressImageWorkspace from "@/components/CompressImageWorkspace";
 import NotFound from "./NotFound";
 import { getToolMeta } from "@/lib/toolContent";
 import { getToolLongForm } from "@/lib/toolContentLong";
+import { SITE_NAME, SITE_URL } from "@/config/site";
 
 const formatSlug = (slug: string) =>
   slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -65,30 +67,27 @@ const ToolPage = () => {
   const name = meta?.name ?? formatSlug(slug);
   const description =
     meta?.description ??
-    `Use Convertify's ${name} tool — fast, free, and secure online file processing.`;
+    `Use Convertify's ${name} tool â€” fast, free, and secure online file processing.`;
 
-  // Canonical points to the short URL (/merge-pdf), not the legacy /tool/:slug
   const canonicalPath = `/${slug}`;
-
-  // SEO-friendly title: "Merge PDF — Combine multiple PDFs into one document | Free Online Tool"
   const seoTitle = meta
-    ? `${name} — ${meta.tagline} | Free Online Tool`
+    ? `${name} â€” ${meta.tagline} | Free Online Tool`
     : `${name} | Free Online Tool`;
 
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: SITE + "/" },
-      { "@type": "ListItem", position: 2, name: "Tools", item: SITE + "/tools" },
-      { "@type": "ListItem", position: 3, name, item: SITE + canonicalPath },
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Tools", item: `${SITE_URL}/tools` },
+      { "@type": "ListItem", position: 3, name, item: `${SITE_URL}${canonicalPath}` },
     ],
   };
 
   const softwareLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${name} — Convertify`,
+    name: `${name} â€” ${SITE_NAME}`,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web Browser",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
@@ -122,8 +121,38 @@ const ToolPage = () => {
         jsonLd={jsonLd}
       />
       <Navbar />
-      {Workspace ? <Workspace /> : <ToolWorkspace toolName={name} toolSlug={slug} tagline={meta?.tagline} />}
-      {meta && <ToolContent meta={meta} />}
+      <main className="pt-28 pb-20">
+        <div className="container max-w-7xl mx-auto px-6">
+          <AdSlot placement="header" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
+
+          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-8">
+            <div className="min-w-0 space-y-10">
+              {Workspace ? <Workspace /> : <ToolWorkspace toolName={name} toolSlug={slug} tagline={meta?.tagline} />}
+
+              <AdSlot
+                placement="mobile"
+                variant="compact"
+                className="lg:hidden"
+                label="Sponsored"
+                style={{ minHeight: "100px" }}
+              />
+
+              {meta && <ToolContent meta={meta} />}
+            </div>
+
+            <aside className="hidden lg:block">
+              <div className="sticky top-32 space-y-6">
+                <AdSlot
+                  placement="sidebar"
+                  variant="sidebar"
+                  label="Sponsored"
+                  style={{ minHeight: "250px" }}
+                />
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
       <Footer />
     </>
   );

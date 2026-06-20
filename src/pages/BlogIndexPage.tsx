@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import SEO, { SITE } from "@/components/SEO";
+import SEO from "@/components/SEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AdSlot from "@/components/AdSlot";
 import { BLOG_POSTS } from "@/lib/blogPosts";
+import { SITE_URL } from "@/config/site";
 
 const BlogIndexPage = () => {
   const itemListLd = {
@@ -12,7 +14,7 @@ const BlogIndexPage = () => {
     itemListElement: BLOG_POSTS.map((p, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${SITE}/blog/${p.slug}`,
+      url: `${SITE_URL}/blog/${p.slug}`,
       name: p.title,
     })),
   };
@@ -40,6 +42,8 @@ const BlogIndexPage = () => {
             Practical guides to working with PDFs, Word documents and images. Written for real people, not search engines.
           </p>
         </section>
+
+        <AdSlot placement="header" variant="compact" label="Sponsored" style={{ minHeight: "90px" }} />
 
         <section className="container max-w-3xl mx-auto px-6 grid gap-6">
           {BLOG_POSTS.map((p) => (
